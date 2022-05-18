@@ -11,8 +11,7 @@ namespace datalayer.abstraction.Entities
     {
         public long Id { get; set; }
         public string Name { get; set; }
-        public MapPoint MapPoint { get; set; }
-        public ICollection<City> City { get; set; }
+        public Address Address { get; set; }
         public string Description { get; set; }
         public ICollection<Doctor> Doctors { get; set; }
         public ICollection<MedicalProfile> MedicalProfiles { get; set; }
