@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace medical_services.api.Controllers.dto.request
+namespace medical_services.api.Controllers.Dto.request
 {
     public record DoctorRequestDto
     {

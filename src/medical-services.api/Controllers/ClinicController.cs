@@ -1,5 +1,5 @@
-﻿using medical_services.api.Controllers.dto.request;
-using medical_services.api.Controllers.dto.responce;
+﻿using medical_services.api.Controllers.Dto.request;
+using medical_services.api.Controllers.Dto.responce;
 using System.Threading.Tasks;
 using System;
 using Microsoft.AspNetCore.Mvc;

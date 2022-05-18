@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using medical_services.api.Controllers.dto.responce;
+using medical_services.api.Controllers.Dto.responce;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 

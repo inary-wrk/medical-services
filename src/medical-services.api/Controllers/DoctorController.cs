@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using medical_services.api.Controllers.dto.request;
-using medical_services.api.Controllers.dto.responce;
+using medical_services.api.Controllers.Dto.request;
+using medical_services.api.Controllers.Dto.responce;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860

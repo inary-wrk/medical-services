@@ -1,7 +1,7 @@
-﻿namespace medical_services.api.Controllers.dto.responce
+﻿namespace medical_services.api.Controllers.Dto.responce
 {
     public record ClinicResponceDto(
-        long id,
+        long Id,
         string Name,
         string Address
         );
