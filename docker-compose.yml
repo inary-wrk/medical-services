@@ -15,7 +15,7 @@ services:
     environment:
       POSTGRES_PASSWORD: dev
       POSTGRES_USER: dev
-      POSTGRES_DB: medical-services-db
+      POSTGRES_DB: medical-services
     ports:
       - 5432:5432
     volumes:
@@ -28,7 +28,7 @@ services:
     environment:
       ADMINER_DEFAULT_DB_DRIVER: PostgreSQL
       ADMINER_DEFAULT_DB_HOST: medical-services-db
-      ADMINER_DEFAULT_DB_NAME: medical-services-db
+      ADMINER_DEFAULT_DB_NAME: medical-services
 
     ports:
       - 8080:8080

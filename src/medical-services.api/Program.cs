@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace medical_services.api
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -20,7 +20,9 @@ namespace medical_services.api
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    webBuilder
+                    .ConfigureLogging(builder => builder.AddJsonConsole())
+                    .UseStartup<Startup>();
                 });
     }
 }
