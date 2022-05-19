@@ -15,7 +15,9 @@ namespace datalayer.abstraction.Entities
         public int Street { get; set; }
         public int HouseNnumber { get; set; }
         public int HouseBuilding { get; set; }
-        public MapPoint MapPoint { get; set; }
+        public double NorthLatitude { get; set; }
+        public double WesternLongitude { get; set; }
+
 
         public long ClinicId { get; set; }
         public Clinic Clinic { get; set; }

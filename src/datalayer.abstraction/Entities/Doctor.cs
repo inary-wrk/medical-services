@@ -11,7 +11,7 @@ namespace datalayer.abstraction.Entities
         public long Id { get; set; }
         public PersonInformation PersonInformation { get; set; }
         public string Description { get; set; }
-        public Uri PhotoUrl { get; set; }
+        public string PhotoUrl { get; set; }
         public ICollection<MedicalProfile> MedicalProfile { get; set; }
         public ICollection<Clinic> Clinic { get; set; }
     }
