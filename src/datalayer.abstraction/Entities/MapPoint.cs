@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace datalayer.abstraction.TinyTypes
+namespace datalayer.abstraction.Entities
 {
     public struct MapPoint
     {
