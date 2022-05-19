@@ -41,6 +41,11 @@ namespace datalayer
                 .WithOne(address => address.Clinic)
                 .HasForeignKey<Address>(address => address.ClinicId)
                 .IsRequired();
+
+            modelBuilder.Entity<Address>().
+                HasOne(address => address.MapPoint)
+                .WithOne(mapPoint => mapPoint.Address);
+
         }
     }
 }
