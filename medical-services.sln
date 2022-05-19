@@ -5,17 +5,19 @@ VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8B693F80-FEDB-4258-B9BE-4587F8EEB865}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "medical-services.api", "src\medical-services.api\medical-services.api.csproj", "{CF034001-A5A3-4BA9-9BA5-8A3D87D80C87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "medical-services.api", "src\medical-services.api\medical-services.api.csproj", "{CF034001-A5A3-4BA9-9BA5-8A3D87D80C87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "businesslogic", "src\businesslogic\businesslogic.csproj", "{43C2EAD2-DE56-49A1-8EE6-6D5815ADBF2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "businesslogic", "src\businesslogic\businesslogic.csproj", "{43C2EAD2-DE56-49A1-8EE6-6D5815ADBF2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "businesslogic.abstraction", "src\businesslogic.abstraction\businesslogic.abstraction.csproj", "{70DAE5D6-CDA5-4A9D-930D-C342933B4963}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "businesslogic.abstraction", "src\businesslogic.abstraction\businesslogic.abstraction.csproj", "{70DAE5D6-CDA5-4A9D-930D-C342933B4963}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "datalayer", "src\datalayer\datalayer.csproj", "{EB285675-11B3-4000-A177-2DC8E9B892B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "datalayer", "src\datalayer\datalayer.csproj", "{EB285675-11B3-4000-A177-2DC8E9B892B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "datalayer.abstraction", "src\datalayer.abstraction\datalayer.abstraction.csproj", "{FBF7982C-9DF4-4DA4-B8E6-7AC39C17AFC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "datalayer.abstraction", "src\datalayer.abstraction\datalayer.abstraction.csproj", "{FBF7982C-9DF4-4DA4-B8E6-7AC39C17AFC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "migrations", "src\migrations\migrations.csproj", "{912F0746-1878-431D-978E-F666A8450D6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "migrations", "src\migrations\migrations.csproj", "{912F0746-1878-431D-978E-F666A8450D6B}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81554BDE-A001-4164-B326-AA99469FE6CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{912F0746-1878-431D-978E-F666A8450D6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{912F0746-1878-431D-978E-F666A8450D6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{912F0746-1878-431D-978E-F666A8450D6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81554BDE-A001-4164-B326-AA99469FE6CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81554BDE-A001-4164-B326-AA99469FE6CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81554BDE-A001-4164-B326-AA99469FE6CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81554BDE-A001-4164-B326-AA99469FE6CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

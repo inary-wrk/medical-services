@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  medical-services.api:
+    image: ${DOCKER_REGISTRY-}medicalservicesapi
+    build:
+      context: .
+      dockerfile: src/medical-services.api/Dockerfile
+    depends_on:
+      - medical-services-db
+
+  medical-services-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: dev
+      POSTGRES_USER: dev
+      POSTGRES_DB: medical-services-db
+    ports:
+      - 5432:5432
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    depends_on: 
+      - medical-services-db
+    environment:
+      ADMINER_DEFAULT_DB_DRIVER: PostgreSQL
+      ADMINER_DEFAULT_DB_HOST: medical-services-db
+      ADMINER_DEFAULT_DB_NAME: medical-services-db
+
+    ports:
+      - 8080:8080
+
+volumes:
+  pgdata:
