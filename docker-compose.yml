@@ -6,7 +6,6 @@ services:
     build:
       context: .
       dockerfile: src/medical-services.api/Dockerfile
-    profiles: [dev]
     depends_on:
       - medical-services-db
 
@@ -14,15 +13,6 @@ services:
     image: postgres
     volumes:
       - ./pgdata:/var/lib/postgresql/data
-
-  migrations:
-    image: ${DOCKER_REGISTRY-}migrations
-    build:
-      context: .
-      dockerfile: src/migrations/Dockerfile
-    profiles: [migration]
-    depends_on:
-      - medical-services-db
 
   adminer:
     image: adminer

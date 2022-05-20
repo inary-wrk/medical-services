@@ -9,16 +9,17 @@ namespace migrations
     internal class Worker : IHostedService
     {
 
-        private readonly ApplicationDbContext _context;
+        private readonly IDbContextFactory<ApplicationDbContext> _contextFactory;
 
-        public Worker(ApplicationDbContext context)
+        public Worker(IDbContextFactory<ApplicationDbContext> contextFactory)
         {
-            _context = context;
+            _contextFactory = contextFactory;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            await _context.Database.MigrateAsync(cancellationToken);
+            using var context = _contextFactory.CreateDbContext();
+            await context.Database.MigrateAsync(cancellationToken);
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

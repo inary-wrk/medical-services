@@ -19,7 +19,7 @@ namespace migrations
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddDbContext<ApplicationDbContext>(options =>
+                    services.AddDbContextFactory<ApplicationDbContext>(options =>
                     {
                         options.UseNpgsql(
                             hostContext.Configuration["CONNECTION_STRING"],
