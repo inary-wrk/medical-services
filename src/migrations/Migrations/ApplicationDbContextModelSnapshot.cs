@@ -66,9 +66,7 @@ namespace migrations.Migrations
             modelBuilder.Entity("datalayer.abstraction.Entities.Address", b =>
                 {
                     b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                        .HasColumnType("bigint");
 
                     b.Property<string>("City")
                         .HasColumnType("text");
@@ -99,10 +97,7 @@ namespace migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClinicId")
-                        .IsUnique();
-
-                    b.ToTable("Addresss");
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("datalayer.abstraction.Entities.Clinic", b =>
@@ -116,6 +111,7 @@ namespace migrations.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PhotoUrl")
@@ -123,7 +119,7 @@ namespace migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clinics");
+                    b.ToTable("Clinic");
                 });
 
             modelBuilder.Entity("datalayer.abstraction.Entities.Doctor", b =>
@@ -141,7 +137,7 @@ namespace migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Doctors");
+                    b.ToTable("Doctor");
                 });
 
             modelBuilder.Entity("datalayer.abstraction.Entities.MedicalProfile", b =>
@@ -155,11 +151,12 @@ namespace migrations.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("MedicalProfiles");
+                    b.ToTable("MedicalProfile");
                 });
 
             modelBuilder.Entity("datalayer.abstraction.Entities.PersonInformation", b =>
@@ -173,9 +170,11 @@ namespace migrations.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Surname")
@@ -238,7 +237,7 @@ namespace migrations.Migrations
                 {
                     b.HasOne("datalayer.abstraction.Entities.Clinic", "Clinic")
                         .WithOne("Address")
-                        .HasForeignKey("datalayer.abstraction.Entities.Address", "ClinicId")
+                        .HasForeignKey("datalayer.abstraction.Entities.Address", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -258,12 +257,14 @@ namespace migrations.Migrations
 
             modelBuilder.Entity("datalayer.abstraction.Entities.Clinic", b =>
                 {
-                    b.Navigation("Address");
+                    b.Navigation("Address")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("datalayer.abstraction.Entities.Doctor", b =>
                 {
-                    b.Navigation("PersonInformation");
+                    b.Navigation("PersonInformation")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
