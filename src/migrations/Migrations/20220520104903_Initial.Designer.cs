@@ -9,7 +9,7 @@ using datalayer;
 namespace migrations.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220520152025_Initial")]
+    [Migration("20220520104903_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,7 +68,9 @@ namespace migrations.Migrations
             modelBuilder.Entity("datalayer.abstraction.Entities.Address", b =>
                 {
                     b.Property<long>("Id")
-                        .HasColumnType("bigint");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("City")
                         .HasColumnType("text");
@@ -99,7 +101,10 @@ namespace migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Address");
+                    b.HasIndex("ClinicId")
+                        .IsUnique();
+
+                    b.ToTable("Addresss");
                 });
 
             modelBuilder.Entity("datalayer.abstraction.Entities.Clinic", b =>
@@ -113,7 +118,6 @@ namespace migrations.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PhotoUrl")
@@ -121,7 +125,7 @@ namespace migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clinic");
+                    b.ToTable("Clinics");
                 });
 
             modelBuilder.Entity("datalayer.abstraction.Entities.Doctor", b =>
@@ -139,7 +143,7 @@ namespace migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Doctor");
+                    b.ToTable("Doctors");
                 });
 
             modelBuilder.Entity("datalayer.abstraction.Entities.MedicalProfile", b =>
@@ -153,12 +157,11 @@ namespace migrations.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("MedicalProfile");
+                    b.ToTable("MedicalProfiles");
                 });
 
             modelBuilder.Entity("datalayer.abstraction.Entities.PersonInformation", b =>
@@ -172,11 +175,9 @@ namespace migrations.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("FirstName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Surname")
@@ -239,7 +240,7 @@ namespace migrations.Migrations
                 {
                     b.HasOne("datalayer.abstraction.Entities.Clinic", "Clinic")
                         .WithOne("Address")
-                        .HasForeignKey("datalayer.abstraction.Entities.Address", "Id")
+                        .HasForeignKey("datalayer.abstraction.Entities.Address", "ClinicId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -259,14 +260,12 @@ namespace migrations.Migrations
 
             modelBuilder.Entity("datalayer.abstraction.Entities.Clinic", b =>
                 {
-                    b.Navigation("Address")
-                        .IsRequired();
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("datalayer.abstraction.Entities.Doctor", b =>
                 {
-                    b.Navigation("PersonInformation")
-                        .IsRequired();
+                    b.Navigation("PersonInformation");
                 });
 #pragma warning restore 612, 618
         }
