@@ -1,6 +1,7 @@
-version: '3.4'
+version: '3.9'
 
 services:
+
   medical-services.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
@@ -12,3 +13,24 @@ services:
     volumes:
       - ${APPDATA}/Microsoft/UserSecrets:/root/.microsoft/usersecrets:ro
       - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro
+
+  migrations:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - CONNECTION_STRING=Host=medical-services-db;Username=dev;Password=dev;Database=medical-services;
+
+  medical-services-db:
+    environment:
+      POSTGRES_PASSWORD: dev
+      POSTGRES_USER: dev
+      POSTGRES_DB: medical-services
+    ports:
+      - 5432:5432
+
+  adminer:
+    ports:
+      - 8080:8080
+    environment:
+      ADMINER_DEFAULT_DB_DRIVER: PostgreSQL
+      ADMINER_DEFAULT_DB_HOST: medical-services-db
+      ADMINER_DEFAULT_DB_NAME: medical-services

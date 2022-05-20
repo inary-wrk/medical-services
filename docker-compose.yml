@@ -6,32 +6,26 @@ services:
     build:
       context: .
       dockerfile: src/medical-services.api/Dockerfile
+    profiles: [dev]
     depends_on:
       - medical-services-db
 
   medical-services-db:
     image: postgres
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: dev
-      POSTGRES_USER: dev
-      POSTGRES_DB: medical-services
-    ports:
-      - 5432:5432
     volumes:
       - ./pgdata:/var/lib/postgresql/data
 
+  migrations:
+    image: ${DOCKER_REGISTRY-}migrations
+    build:
+      context: .
+      dockerfile: src/migrations/Dockerfile
+    profiles: [migration]
+    depends_on:
+      - medical-services-db
+
   adminer:
     image: adminer
-    depends_on: 
-      - medical-services-db
-    environment:
-      ADMINER_DEFAULT_DB_DRIVER: PostgreSQL
-      ADMINER_DEFAULT_DB_HOST: medical-services-db
-      ADMINER_DEFAULT_DB_NAME: medical-services
-
-    ports:
-      - 8080:8080
 
 volumes:
   pgdata:

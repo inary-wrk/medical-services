@@ -22,7 +22,7 @@ namespace migrations
                     services.AddDbContext<ApplicationDbContext>(options =>
                     {
                         options.UseNpgsql(
-                            hostContext.Configuration.GetConnectionString("CONNECTION_STRING"),
+                            hostContext.Configuration["CONNECTION_STRING"],
                             l => l.MigrationsAssembly(nameof(migrations)))
                         .UseLoggerFactory(LoggerFactory.Create(builder =>
                         {

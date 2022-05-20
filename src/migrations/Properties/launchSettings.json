@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "migrations": {
+      "commandName": "Project",
+      "commandLineArgs": "initial"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}

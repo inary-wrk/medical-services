@@ -1,0 +1,27 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "composeLaunchAction": "LaunchBrowser",
+      "composeLaunchServiceName": "medical-services.api",
+      "composeProfile": {
+        "includes": [
+          "dev"
+        ]
+      },
+      "composeLaunchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
+      "commandVersion": "1.0"
+    },
+    "migration": {
+      "commandName": "DockerCompose",
+      "composeLaunchAction": "None",
+      "composeLaunchServiceName": "migrations",
+      "composeProfile": {
+        "includes": [
+          "migration"
+        ]
+      },
+      "commandVersion": "1.0"
+    }
+  }
+}
