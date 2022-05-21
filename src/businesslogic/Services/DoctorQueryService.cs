@@ -6,7 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using businesslogic.abstraction.Dto;
 using businesslogic.abstraction.Services;
-using businesslogic.abstraction.TinyTypes;
+using businesslogic.abstraction.ValueObjects;
 
 namespace businesslogic.Services
 {
