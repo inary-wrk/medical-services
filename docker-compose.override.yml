@@ -6,7 +6,8 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
-      - CONNECTION_STRING=Host=medical-services-db;Username=dev;Password=dev;Database=medical-services;
+      - CONNECTION_STRINGS:QUERYCONNECTION=Host=medical-services-db;Username=dev;Password=dev;Database=medical-services;
+      - CONNECTION_STRINGS:COMMANDCONNECTION=Host=medical-services-db;Username=dev;Password=dev;Database=medical-services;
     ports:
       - "80"
       - "443"

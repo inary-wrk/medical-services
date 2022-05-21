@@ -36,12 +36,10 @@ namespace medical_services.api
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "medical_services.api", Version = "v1" });
             });
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseNpgsql(Configuration["CONNECTION_STRING"]);
-            });
+            services.AddDbContextPool<CommandDbContext>(options => { });
+            services.AddDbContextPool<QueryDbContext>(options => { });
             services.AddMediatR(typeof(Startup));
-            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
