@@ -1,38 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using medical_services.api.Controllers.Dto.request;
 using medical_services.api.Controllers.Dto.responce;
+using medical_services.api.Queries;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace medical_services.api.Controllers
 {
+
+
     [Route("api/doctor")]
     [ApiController]
     public class DoctorController : ControllerBase
     {
-        [HttpGet("{id}")]
-        public async Task<DoctorResponceDto> GetDoctor(long id)
+        private readonly IMediator _mediator;
+
+        public DoctorController(IMediator mediator)
         {
-            throw new NotImplementedException();
+            _mediator = mediator;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<DoctorResponceDto> GetDoctor(long id, CancellationToken cancellationToken)
+        {
+            return await _mediator.Send(new GetDoctorQuery(id), cancellationToken);
         }
 
         [HttpPost("create")]
-        public async Task CreateDoctor([FromBody] DoctorRequestDto doctor)
+        public async Task CreateDoctor([FromBody] DoctorRequestDto doctor, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
         [HttpPut("{id}")]
-        public void UpdateDoctor(long id, [FromBody] DoctorRequestDto doctor)
+        public void UpdateDoctor(long id, [FromBody] DoctorRequestDto doctor, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
         [HttpDelete("{id}")]
-        public void DeleteDoctor(long id)
+        public void DeleteDoctor(long id, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

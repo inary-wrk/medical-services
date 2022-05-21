@@ -15,13 +15,21 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="MediatR" Version="10.0.1" />
+		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\businesslogic.abstraction\businesslogic.abstraction.csproj" />
 	  <ProjectReference Include="..\businesslogic\businesslogic.csproj" />
+	  <ProjectReference Include="..\datalayer.abstraction\datalayer.abstraction.csproj" />
 	  <ProjectReference Include="..\datalayer\datalayer.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Commands\" />
 	</ItemGroup>
 
 </Project>
