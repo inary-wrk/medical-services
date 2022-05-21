@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace datalayer.abstraction.Entities
 {
-    public class PersonInformation
+    public class Person
     {
         public long Id { get; set; }
         [Required(AllowEmptyStrings = false)]
