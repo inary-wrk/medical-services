@@ -14,6 +14,7 @@ namespace datalayer.abstraction.Entities
         public string Name { get; set; }
         [Required]
         public Address Address { get; set; }
+        public MapPoint MapPoint { get; set; }
         public string Description { get; set; }
         public string PhotoUrl { get; set; }
         public ICollection<Doctor> Doctor { get; set; }

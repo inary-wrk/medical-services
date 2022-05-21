@@ -10,17 +10,17 @@ namespace datalayer.abstraction.Entities
 {
     public class Address
     {
-        public long Id { get; set; }
+        [Required]
         public string CountryISO { get; set; }
+        [Required]
         public string Region { get; set; }
+        [Required]
         public string City { get; set; }
-        public int Street { get; set; }
+        [Required]
+        public string Street { get; set; }
+        [Required]
         public int HouseNnumber { get; set; }
         public int HouseBuilding { get; set; }
-        public double NorthLatitude { get; set; }
-        public double WesternLongitude { get; set; }
-
-        public long ClinicId { get; set; }
-        public Clinic Clinic { get; set; }
+        public int Appartament { get; set; }
     }
 }
