@@ -1,19 +1,16 @@
-﻿using businesslogic.abstraction.TinyTypes;
+﻿using businesslogic.abstraction.ValueObjects;
 
 namespace businesslogic.abstraction.Dto
 {
     public record Person
     {
         public Id PersonId { get; set; }
-        public PersonName FirstName { get; set; }
-        public PersonName LastName { get; set; }
-        public PersonName? Surname { get; set; }
+        public PersonName Name { get; set; }
 
-        public Person(PersonName firstName, PersonName lastName, PersonName? surname = null)
+        public Person(Id personId, PersonName name)
         {
-            FirstName = firstName;
-            LastName = lastName;
-            Surname = surname;
+            PersonId = personId;
+            Name = name;
         }
     }
 }
