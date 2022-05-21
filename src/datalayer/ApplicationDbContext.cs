@@ -10,7 +10,7 @@ namespace datalayer
         DbSet<Clinic> Clinic { get; set; }
         DbSet<MedicalProfile> MedicalProfile { get; set; }
         DbSet<Address> Address { get; set; }
-        DbSet<PersonInformation> PersonInformation { get; set; }
+        DbSet<Person> PersonInformation { get; set; }
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
@@ -40,7 +40,7 @@ namespace datalayer
             modelBuilder.Entity<Doctor>()
                 .HasOne(doctor => doctor.PersonInformation)
                 .WithOne(personInformation => personInformation.Doctor)
-                .HasForeignKey<PersonInformation>(personInformation => personInformation.DoctorId);
+                .HasForeignKey<Person>(personInformation => personInformation.DoctorId);
         }
     }
 }
