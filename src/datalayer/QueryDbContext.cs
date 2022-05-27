@@ -1,23 +1,12 @@
-﻿using System.Net;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace datalayer
 {
-    public sealed class QueryDbContext : DbContext
+    public sealed class QueryDbContext : BaseDbContext
     {
-        private readonly IConfiguration _configuration;
-
-        public QueryDbContext(DbContextOptions<QueryDbContext> options, IConfiguration configuration) : base(options)
+        public QueryDbContext(DbContextOptions<QueryDbContext> options)
+            : base(options)
         {
-            _configuration = configuration;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseNpgsql(_configuration["CONNECTION_STRINGS:QUERYCONNECTION"])
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution);
-            base.OnConfiguring(optionsBuilder);
         }
     }
 }
