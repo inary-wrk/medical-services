@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace datalayer.abstraction.Entities
 {
     public class Address
     {
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string CountryISO { get; set; }
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string Region { get; set; }
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string City { get; set; }
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         public string Street { get; set; }
         [Required]
         public int HouseNnumber { get; set; }

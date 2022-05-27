@@ -3,9 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace datalayer.abstraction.Entities
 {
-    public class MedicalProfile
+    public class MedicalProfile : BaseEntity
     {
-        public long Id { get; set; }
         [Required(AllowEmptyStrings = false)]
         public string Name { get; set; }
         public string Description { get; set; }
