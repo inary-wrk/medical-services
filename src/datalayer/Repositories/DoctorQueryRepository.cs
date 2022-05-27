@@ -1,19 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using datalayer.abstraction.Entities;
 using datalayer.abstraction.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace datalayer.Repositories
 {
-    public class DoctorQueryRepository : IQueryRepository<long, Doctor>
+    public class DoctorQueryRepository : IDoctorQueryRepository
     {
-        async Task<Doctor> IQueryRepository<long, Doctor>.GetByIdAsync(long arg, CancellationToken cancellationToken)
+        private readonly QueryDbContext _dbContext;
+
+        public DoctorQueryRepository(QueryDbContext dbContext)
         {
-            throw new NotImplementedException();
+            _dbContext = dbContext;
+        }
+
+        async Task<Doctor> IDoctorQueryRepository.GetByIdAsync(long id, CancellationToken cancellationToken)
+        {
+           return await _dbContext.Doctor.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
         }
     }
 }
