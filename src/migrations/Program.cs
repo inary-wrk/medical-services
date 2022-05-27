@@ -1,7 +1,5 @@
-﻿using System;
-using datalayer;
+﻿using datalayer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -19,17 +17,17 @@ namespace migrations
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    services.AddDbContextFactory<ApplicationDbContext>(options =>
+                    services.AddDbContextFactory<MigrationDbContext>(options =>
                     {
                         options.UseNpgsql(
-                            hostContext.Configuration["CONNECTION_STRING"],
+                            hostContext.Configuration["CONNECTION_STRINGS:COMMANDCONNECTION"],
                             l => l.MigrationsAssembly(nameof(migrations)))
                         .UseLoggerFactory(LoggerFactory.Create(builder =>
                         {
                             builder.AddConsole()
                             .AddFilter((category, level) =>
                             category == DbLoggerCategory.Database.Command.Name
-                            && level == LogLevel.Information);
+                                && level == LogLevel.Information);
                         }));
                     });
                     services.AddHostedService<Worker>();

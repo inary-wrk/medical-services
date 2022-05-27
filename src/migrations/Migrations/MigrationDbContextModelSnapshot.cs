@@ -7,8 +7,8 @@ using datalayer;
 
 namespace migrations.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(MigrationDbContext))]
+    partial class MigrationDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -63,48 +63,6 @@ namespace migrations.Migrations
                     b.ToTable("DoctorMedicalProfile");
                 });
 
-            modelBuilder.Entity("datalayer.abstraction.Entities.Address", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<string>("City")
-                        .HasColumnType("text");
-
-                    b.Property<long>("ClinicId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("CountryISO")
-                        .HasColumnType("text");
-
-                    b.Property<int>("HouseBuilding")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("HouseNnumber")
-                        .HasColumnType("integer");
-
-                    b.Property<double>("NorthLatitude")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("Region")
-                        .HasColumnType("text");
-
-                    b.Property<int>("Street")
-                        .HasColumnType("integer");
-
-                    b.Property<double>("WesternLongitude")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ClinicId")
-                        .IsUnique();
-
-                    b.ToTable("Addresss");
-                });
-
             modelBuilder.Entity("datalayer.abstraction.Entities.Clinic", b =>
                 {
                     b.Property<long>("Id")
@@ -116,6 +74,7 @@ namespace migrations.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PhotoUrl")
@@ -123,7 +82,7 @@ namespace migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clinics");
+                    b.ToTable("Clinic");
                 });
 
             modelBuilder.Entity("datalayer.abstraction.Entities.Doctor", b =>
@@ -136,12 +95,23 @@ namespace migrations.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("PhotoUrl")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Surname")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Doctors");
+                    b.ToTable("Doctor");
                 });
 
             modelBuilder.Entity("datalayer.abstraction.Entities.MedicalProfile", b =>
@@ -155,38 +125,12 @@ namespace migrations.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.ToTable("MedicalProfiles");
-                });
-
-            modelBuilder.Entity("datalayer.abstraction.Entities.PersonInformation", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<long>("DoctorId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Surname")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DoctorId")
-                        .IsUnique();
-
-                    b.ToTable("PersonInformation");
+                    b.ToTable("MedicalProfile");
                 });
 
             modelBuilder.Entity("ClinicDoctor", b =>
@@ -234,36 +178,73 @@ namespace migrations.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("datalayer.abstraction.Entities.Address", b =>
-                {
-                    b.HasOne("datalayer.abstraction.Entities.Clinic", "Clinic")
-                        .WithOne("Address")
-                        .HasForeignKey("datalayer.abstraction.Entities.Address", "ClinicId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Clinic");
-                });
-
-            modelBuilder.Entity("datalayer.abstraction.Entities.PersonInformation", b =>
-                {
-                    b.HasOne("datalayer.abstraction.Entities.Doctor", "Doctor")
-                        .WithOne("PersonInformation")
-                        .HasForeignKey("datalayer.abstraction.Entities.PersonInformation", "DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
-                });
-
             modelBuilder.Entity("datalayer.abstraction.Entities.Clinic", b =>
                 {
-                    b.Navigation("Address");
-                });
+                    b.OwnsOne("datalayer.abstraction.Entities.Address", "Address", b1 =>
+                        {
+                            b1.Property<long>("ClinicId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("bigint")
+                                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("datalayer.abstraction.Entities.Doctor", b =>
-                {
-                    b.Navigation("PersonInformation");
+                            b1.Property<int>("Appartament")
+                                .HasColumnType("integer");
+
+                            b1.Property<string>("City")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("CountryISO")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<int>("HouseBuilding")
+                                .HasColumnType("integer");
+
+                            b1.Property<int>("HouseNnumber")
+                                .HasColumnType("integer");
+
+                            b1.Property<string>("Region")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.Property<string>("Street")
+                                .IsRequired()
+                                .HasColumnType("text");
+
+                            b1.HasKey("ClinicId");
+
+                            b1.ToTable("Clinic");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ClinicId");
+                        });
+
+                    b.OwnsOne("datalayer.abstraction.Entities.MapPoint", "MapPoint", b1 =>
+                        {
+                            b1.Property<long>("ClinicId")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("bigint")
+                                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                            b1.Property<double>("NorthLatitude")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("WesternLongitude")
+                                .HasColumnType("double precision");
+
+                            b1.HasKey("ClinicId");
+
+                            b1.ToTable("Clinic");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ClinicId");
+                        });
+
+                    b.Navigation("Address")
+                        .IsRequired();
+
+                    b.Navigation("MapPoint");
                 });
 #pragma warning restore 612, 618
         }

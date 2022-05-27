@@ -8,73 +8,58 @@ namespace migrations.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Clinics",
+                name: "Clinic",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Address_CountryISO = table.Column<string>(type: "text", nullable: false),
+                    Address_Region = table.Column<string>(type: "text", nullable: false),
+                    Address_City = table.Column<string>(type: "text", nullable: false),
+                    Address_Street = table.Column<string>(type: "text", nullable: false),
+                    Address_HouseNnumber = table.Column<int>(type: "integer", nullable: false),
+                    Address_HouseBuilding = table.Column<int>(type: "integer", nullable: false),
+                    Address_Appartament = table.Column<int>(type: "integer", nullable: false),
+                    MapPoint_NorthLatitude = table.Column<double>(type: "double precision", nullable: true),
+                    MapPoint_WesternLongitude = table.Column<double>(type: "double precision", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
                     PhotoUrl = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Clinics", x => x.Id);
+                    table.PrimaryKey("PK_Clinic", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Doctors",
+                name: "Doctor",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    LastName = table.Column<string>(type: "text", nullable: false),
+                    Surname = table.Column<string>(type: "text", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
                     PhotoUrl = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Doctors", x => x.Id);
+                    table.PrimaryKey("PK_Doctor", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "MedicalProfiles",
+                name: "MedicalProfile",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MedicalProfiles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Addresss",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CountryISO = table.Column<string>(type: "text", nullable: true),
-                    Region = table.Column<string>(type: "text", nullable: true),
-                    City = table.Column<string>(type: "text", nullable: true),
-                    Street = table.Column<int>(type: "integer", nullable: false),
-                    HouseNnumber = table.Column<int>(type: "integer", nullable: false),
-                    HouseBuilding = table.Column<int>(type: "integer", nullable: false),
-                    NorthLatitude = table.Column<double>(type: "double precision", nullable: false),
-                    WesternLongitude = table.Column<double>(type: "double precision", nullable: false),
-                    ClinicId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Addresss", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Addresss_Clinics_ClinicId",
-                        column: x => x.ClinicId,
-                        principalTable: "Clinics",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_MedicalProfile", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -88,37 +73,15 @@ namespace migrations.Migrations
                 {
                     table.PrimaryKey("PK_ClinicDoctor", x => new { x.ClinicId, x.DoctorId });
                     table.ForeignKey(
-                        name: "FK_ClinicDoctor_Clinics_ClinicId",
+                        name: "FK_ClinicDoctor_Clinic_ClinicId",
                         column: x => x.ClinicId,
-                        principalTable: "Clinics",
+                        principalTable: "Clinic",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ClinicDoctor_Doctors_DoctorId",
+                        name: "FK_ClinicDoctor_Doctor_DoctorId",
                         column: x => x.DoctorId,
-                        principalTable: "Doctors",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PersonInformation",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FirstName = table.Column<string>(type: "text", nullable: true),
-                    LastName = table.Column<string>(type: "text", nullable: true),
-                    Surname = table.Column<string>(type: "text", nullable: true),
-                    DoctorId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PersonInformation", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PersonInformation_Doctors_DoctorId",
-                        column: x => x.DoctorId,
-                        principalTable: "Doctors",
+                        principalTable: "Doctor",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -134,15 +97,15 @@ namespace migrations.Migrations
                 {
                     table.PrimaryKey("PK_ClinicMedicalProfile", x => new { x.ClinicId, x.MedicalProfileId });
                     table.ForeignKey(
-                        name: "FK_ClinicMedicalProfile_Clinics_ClinicId",
+                        name: "FK_ClinicMedicalProfile_Clinic_ClinicId",
                         column: x => x.ClinicId,
-                        principalTable: "Clinics",
+                        principalTable: "Clinic",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ClinicMedicalProfile_MedicalProfiles_MedicalProfileId",
+                        name: "FK_ClinicMedicalProfile_MedicalProfile_MedicalProfileId",
                         column: x => x.MedicalProfileId,
-                        principalTable: "MedicalProfiles",
+                        principalTable: "MedicalProfile",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -158,24 +121,18 @@ namespace migrations.Migrations
                 {
                     table.PrimaryKey("PK_DoctorMedicalProfile", x => new { x.DoctorsId, x.MedicalProfileId });
                     table.ForeignKey(
-                        name: "FK_DoctorMedicalProfile_Doctors_DoctorsId",
+                        name: "FK_DoctorMedicalProfile_Doctor_DoctorsId",
                         column: x => x.DoctorsId,
-                        principalTable: "Doctors",
+                        principalTable: "Doctor",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DoctorMedicalProfile_MedicalProfiles_MedicalProfileId",
+                        name: "FK_DoctorMedicalProfile_MedicalProfile_MedicalProfileId",
                         column: x => x.MedicalProfileId,
-                        principalTable: "MedicalProfiles",
+                        principalTable: "MedicalProfile",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Addresss_ClinicId",
-                table: "Addresss",
-                column: "ClinicId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClinicDoctor_DoctorId",
@@ -191,19 +148,10 @@ namespace migrations.Migrations
                 name: "IX_DoctorMedicalProfile_MedicalProfileId",
                 table: "DoctorMedicalProfile",
                 column: "MedicalProfileId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PersonInformation_DoctorId",
-                table: "PersonInformation",
-                column: "DoctorId",
-                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Addresss");
-
             migrationBuilder.DropTable(
                 name: "ClinicDoctor");
 
@@ -214,16 +162,13 @@ namespace migrations.Migrations
                 name: "DoctorMedicalProfile");
 
             migrationBuilder.DropTable(
-                name: "PersonInformation");
+                name: "Clinic");
 
             migrationBuilder.DropTable(
-                name: "Clinics");
+                name: "Doctor");
 
             migrationBuilder.DropTable(
-                name: "MedicalProfiles");
-
-            migrationBuilder.DropTable(
-                name: "Doctors");
+                name: "MedicalProfile");
         }
     }
 }

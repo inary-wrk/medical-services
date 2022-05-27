@@ -8,10 +8,9 @@ namespace migrations
 {
     internal class Worker : IHostedService
     {
+        private readonly IDbContextFactory<MigrationDbContext> _contextFactory;
 
-        private readonly IDbContextFactory<ApplicationDbContext> _contextFactory;
-
-        public Worker(IDbContextFactory<ApplicationDbContext> contextFactory)
+        public Worker(IDbContextFactory<MigrationDbContext> contextFactory)
         {
             _contextFactory = contextFactory;
         }
