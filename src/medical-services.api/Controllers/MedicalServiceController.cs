@@ -1,31 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using medical_services.api.Controllers.Dto.responce;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace medical_services.api.Controllers
 {
     [ApiController]
     [Route("api")]
-    public class MedicalServiceController : ControllerBase
+    [ApiVersion("1.0")]
+    public class MedicalServiceController : Controller
     {
-
         [HttpGet("doctors")]
-        public async Task<DoctorResponceDto> GetDoctors(CancellationToken cancellationToken)
+        public async Task GetDoctors(CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
         [HttpGet("medicalprofiles")]
-        public async Task<IReadOnlyCollection<MedicalProfileResponceDto>> GetMedicalProfiles(CancellationToken cancellationToken)
+        public async Task GetMedicalProfiles(CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
-
-
     }
 }

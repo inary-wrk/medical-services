@@ -1,49 +1,54 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using businesslogic.Features.DoctorFeatures;
 using MediatR;
-using medical_services.api.Controllers.Dto.request;
-using medical_services.api.Controllers.Dto.responce;
-using medical_services.api.Queries;
+using medical_services.api.Controllers.ApiContracts;
+using businesslogic.abstraction.Dto;
 using Microsoft.AspNetCore.Mvc;
-
+using businesslogic.abstraction.Contracts;
 
 namespace medical_services.api.Controllers
 {
-
-
     [Route("api/doctor")]
     [ApiController]
-    public class DoctorController : ControllerBase
+    [ApiVersion("1.0")]
+    public class DoctorController : Controller
     {
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public DoctorController(IMediator mediator)
+        public DoctorController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
+            _mapper = mapper;
         }
 
         [HttpGet("{id}")]
-        public async Task<DoctorResponceDto> GetDoctor(long id, CancellationToken cancellationToken)
+        public async Task<DoctorApi.Response.Details> GetDoctorDetails(long id, CancellationToken cancellationToken)
         {
-            return await _mediator.Send(new GetDoctorQuery(id), cancellationToken);
+            var query = new DoctorDetails.Query(id);
+            var result = await _mediator.Send(query, cancellationToken);
+            return _mapper.Map<DoctorDto.Doctor, DoctorApi.Response.Details>(result);
         }
 
         [HttpPost("create")]
-        public async Task CreateDoctor([FromBody] DoctorRequestDto doctor, CancellationToken cancellationToken)
+        public async Task<DoctorApi.Response.DoctorId> CreateDoctor([FromBody] DoctorApi.Request.CreateTest doctor, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var doctorDto = _mapper.Map<DoctorApi.Request.CreateTest, DoctorDto.Request.Create>(doctor);
+            var command = new DoctorCreate.Command(doctorDto);
+            var result = await _mediator.Send(command, cancellationToken);
+            return new DoctorApi.Response.DoctorId(result);
         }
 
         [HttpPut("{id}")]
-        public void UpdateDoctor(long id, [FromBody] DoctorRequestDto doctor, CancellationToken cancellationToken)
+        public async void UpdateDoctor(long id, [FromBody] DoctorDto.Request.Create doctor, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
         [HttpDelete("{id}")]
-        public void DeleteDoctor(long id, CancellationToken cancellationToken)
+        public async void DeleteDoctor(long id, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
