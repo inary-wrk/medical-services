@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace businesslogic.abstraction.ValueObjects
 {
-    public struct MapPoint
+    public struct MapPointDto
     {
         public double NorthLatitude { get; init; }
         public double WesternLongitude { get; init; }
 
-        public MapPoint(double northLatitude, double westernLongitude)
+        public MapPointDto(double northLatitude, double westernLongitude)
         {
             NorthLatitude = northLatitude;
             WesternLongitude = westernLongitude;
@@ -35,15 +30,16 @@ namespace businesslogic.abstraction.ValueObjects
         private bool PrintMembers(StringBuilder builder)
         {
             builder.Append("NorthLatitude = ");
-            builder.Append(NorthLatitude.ToString());
+            builder.Append(NorthLatitude);
             builder.Append(", WesternLongitude = ");
-            builder.Append(WesternLongitude.ToString());
+            builder.Append(WesternLongitude);
             return true;
         }
 
         public override int GetHashCode()
         {
-            return EqualityComparer<double>.Default.GetHashCode(NorthLatitude) * -1521134295 + EqualityComparer<double>.Default.GetHashCode(WesternLongitude);
+            return (EqualityComparer<double>.Default.GetHashCode(NorthLatitude) * -1521134295)
+                + EqualityComparer<double>.Default.GetHashCode(WesternLongitude);
         }
     }
 }

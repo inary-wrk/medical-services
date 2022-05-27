@@ -14,7 +14,7 @@ namespace businesslogic.abstraction.ValueObjects
         }
 
         public static implicit operator long(Id d) => d.Value;
-        public static explicit operator Id(long b) => new(b);
+        public static implicit operator Id(long b) => new(b);
 
         public override string ToString()
         {
@@ -63,11 +63,6 @@ namespace businesslogic.abstraction.ValueObjects
         public bool Equals(Id other)
         {
             return EqualityComparer<long>.Default.Equals(Value, other.Value);
-        }
-
-        public void Deconstruct(out long Id)
-        {
-            Id = Value;
         }
     }
 }
