@@ -16,7 +16,7 @@ namespace businesslogic.abstraction.Dto
             //IList<string> MedicalProfile,
             //                   IList<string> Clinic);
         }
-        
+
         public record Doctor(Id Id,
                              ValueObjects.FullName FullName,
                              ValueObjects.DoctorDescription Description,

@@ -2,9 +2,8 @@
   "profiles": {
     "Docker Compose": {
       "commandName": "DockerCompose",
-      "composeLaunchAction": "LaunchBrowser",
+      "composeLaunchAction": "None",
       "composeLaunchServiceName": "medical-services.api",
-      "composeLaunchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "commandVersion": "1.0",
       "serviceActions": {
         "adminer": "StartWithoutDebugging",

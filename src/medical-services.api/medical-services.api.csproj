@@ -10,26 +10,40 @@
 		<DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
 	</PropertyGroup>
 
+	<Target Name="Mapster">
+		<Delete Files="@(GeneratedMaps)"/>
+		<Exec WorkingDirectory="$(ProjectDir)" Command="dotnet build" />
+		<Exec WorkingDirectory="$(ProjectDir)" Command="dotnet tool restore" />
+		<Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster extension -a $(TargetDir)$(ProjectName).dll -n medical_services.api.Mapper.CodeGeneratedMaps -o Mapper\CodeGeneratedMaps" />
+		<Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster mapper -a $(TargetDir)$(ProjectName).dll -n medical_services.api.Mapper.CodeGeneratedMaps -o Mapper\CodeGeneratedMaps" />
+	</Target>
+	
+	<ItemGroup>
+		<GeneratedMaps Include="$(ProjectDir)\Mapper\CodeGeneratedMaps\*.g.cs" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="IDisposableAnalyzers" Version="4.0.2">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="MediatR" Version="10.0.1" />
+		<PackageReference Include="Mapster" Version="7.3.0" />
 		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
+		<PackageReference Include="Scrutor" Version="4.1.0" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\businesslogic.abstraction\businesslogic.abstraction.csproj" />
-	  <ProjectReference Include="..\businesslogic\businesslogic.csproj" />
-	  <ProjectReference Include="..\datalayer.abstraction\datalayer.abstraction.csproj" />
-	  <ProjectReference Include="..\datalayer\datalayer.csproj" />
+		<ProjectReference Include="..\businesslogic.abstraction\businesslogic.abstraction.csproj" />
+		<ProjectReference Include="..\businesslogic\businesslogic.csproj" />
+		<ProjectReference Include="..\datalayer.abstraction\datalayer.abstraction.csproj" />
+		<ProjectReference Include="..\datalayer\datalayer.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Commands\" />
+		<Folder Include="Mapper\CodeGeneratedMaps\" />
 	</ItemGroup>
 
 </Project>

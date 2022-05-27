@@ -10,14 +10,14 @@ namespace datalayer
     {
         public static IServiceCollection RegisterDatalayer(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContextPool<CommandDbContext>(option => 
+            services.AddDbContextPool<CommandDbContext>(option =>
             {
                 option.UseNpgsql(configuration["CONNECTION_STRINGS:COMMANDCONNECTION"]);
             });
-            services.AddDbContextPool<QueryDbContext>(option => 
-            { 
+            services.AddDbContextPool<QueryDbContext>(option =>
+            {
                 option.UseNpgsql(configuration["CONNECTION_STRINGS:QUERYCONNECTION"])
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution); 
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution);
             });
 
             services.AddScoped<IDoctorQueryRepository, DoctorQueryRepository>();
