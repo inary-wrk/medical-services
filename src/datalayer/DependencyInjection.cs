@@ -22,6 +22,10 @@ namespace datalayer
 
             services.AddScoped<IDoctorQueryRepository, DoctorQueryRepository>();
             services.AddScoped<IDoctorCommandRepository, DoctorCommandRepository>();
+            services.AddScoped<IMedicalProfileQueryRepository, MedicalProfileQueryRepository>();
+            services.AddScoped<IMedicalProfileCommandRepository, MedicalProfileCommandRepository>();
+            services.AddScoped<IClinicQueryRepository, ClinicQueryRepository>();
+            services.AddScoped<IClinicCommandRepository, ClinicCommandRepository>();
             return services;
         }
     }

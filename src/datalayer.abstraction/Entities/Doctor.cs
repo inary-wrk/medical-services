@@ -5,15 +5,13 @@ namespace datalayer.abstraction.Entities
 {
     public class Doctor : BaseEntity
     {
-        [Required(AllowEmptyStrings = false)]
-        public string FirstName { get; set; }
-        [Required(AllowEmptyStrings = false)]
-        public string LastName { get; set; }
-        public string Surname { get; set; }
-        public string Description { get; set; }
-        public string PhotoUrl { get; set; }
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        public string? Surname { get; set; }
+        public string? Description { get; set; }
+        public string? PhotoUrl { get; set; }
 
-        public ICollection<MedicalProfile> MedicalProfile { get; set; }
-        public ICollection<Clinic> Clinic { get; set; }
+        public ICollection<MedicalProfile> MedicalProfile { get; set; } = null!;
+        public ICollection<Clinic> Clinic { get; set; } = null!;
     }
 }

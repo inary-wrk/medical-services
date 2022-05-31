@@ -6,9 +6,11 @@ namespace medical_services.api.Mapper.EtityConfigs
 {
     internal static class MedicalProfileConfig
     {
-        [Mapper]
+        [Mapper(IsInternal = true)]
         internal interface IMedicalProfileMapper
-            : IMapperCodeGen<MedicalProfile, MedicalProfileDto.MedicalProfile>
+            :IMapCodeGen<MedicalProfileDto.Request.Create, MedicalProfile>,
+            IMapCodeGen<MedicalProfileDto.Request.Update, MedicalProfile>,
+            IMapCodeGen<MedicalProfile, MedicalProfileDto.Response.Details>
         {
         }
 
@@ -16,9 +18,6 @@ namespace medical_services.api.Mapper.EtityConfigs
         {
             public void Register(TypeAdapterConfig config)
             {
-                config.NewConfig<MedicalProfile, MedicalProfileDto.MedicalProfile>()
-                    .Map(dest => dest.Name.Name, src => src.Name)
-                    .Map(dest => dest.Description.Description, src => src.Description);
             }
         }
     }

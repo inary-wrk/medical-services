@@ -3,10 +3,12 @@ using System.Threading.Tasks;
 using datalayer.abstraction.Entities;
 using datalayer.abstraction.Repositories;
 using Microsoft.EntityFrameworkCore;
+using OneOf;
+using OneOf.Types;
 
 namespace datalayer.Repositories
 {
-    public class DoctorQueryRepository : IDoctorQueryRepository
+    internal class DoctorQueryRepository : IDoctorQueryRepository
     {
         private readonly QueryDbContext _dbContext;
 
@@ -15,9 +17,10 @@ namespace datalayer.Repositories
             _dbContext = dbContext;
         }
 
-        async Task<Doctor> IDoctorQueryRepository.GetByIdAsync(long id, CancellationToken cancellationToken)
+        async Task<OneOf<Doctor, NotFound>> IDoctorQueryRepository.GetByIdAsync(long id, CancellationToken cancellationToken)
         {
-           return await _dbContext.Doctor.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+           var doctor = await _dbContext.Doctor.FindAsync(new object[] { id }, cancellationToken);
+            return doctor is null ? new NotFound() : doctor;
         }
     }
 }

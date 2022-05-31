@@ -1,24 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
 using businesslogic.abstraction.ValueObjects;
 
 namespace businesslogic.abstraction.Dto
 {
     public static class ClinicDto
     {
-        public record Clinic(Id Id,
-                              ValueObjects.ClinicName Name,
-                              ValueObjects.Address Address,
-                              ValueObjects.ClinicDescription Description,
-                              List<DoctorDto.Doctor> Doctor,
-                              List<MedicalProfileDto.MedicalProfile> MedicalProfile,
-                              MapPointDto? MapPoint,
-                              Uri? PhotoUrl);
-
-        public static class ValueObjects
+        public static class Request
         {
-            public record ClinicName(string Name);
-            public record ClinicDescription(string Description);
+            public record Create(string Name,
+                                 ValueObject.Address Address,
+                                 MapPointDto? MapPoint,
+                                 string? Description,
+                                 Uri? PhotoUrl);
+
+            public record Update(string? Name,
+                                 ValueObject.UpdateAddress? Address,
+                                 MapPointDto? MapPoint,
+                                 string? Description,
+                                 Uri? PhotoUrl);
+        }
+
+        public static class Response
+        {
+            public record Details(long id,
+                                  string Name,
+                                  ValueObject.Address Address,
+                                  MapPointDto? MapPoint,
+                                  string? Description,
+                                  Uri? PhotoUrl);
+        }
+
+        public static class ValueObject
+        {
             public record Address(string CountryISO,
                                   string Region,
                                   string City,
@@ -26,6 +39,14 @@ namespace businesslogic.abstraction.Dto
                                   int HouseNnumber,
                                   int? HouseBuilding,
                                   int? Appartament);
+
+            public record UpdateAddress(string? CountryISO,
+                                        string? Region,
+                                        string? City,
+                                        string? Street,
+                                        int? HouseNnumber,
+                                        int? HouseBuilding,
+                                        int? Appartament);
         }
     }
 }

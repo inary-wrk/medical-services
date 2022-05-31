@@ -5,9 +5,9 @@ namespace datalayer
 {
     public abstract class BaseDbContext : DbContext
     {
-        public DbSet<Doctor> Doctor { get; set; }
-        public DbSet<Clinic> Clinic { get; set; }
-        public DbSet<MedicalProfile> MedicalProfile { get; set; }
+        public DbSet<Doctor> Doctor { get; set; } = null!;
+        public DbSet<Clinic> Clinic { get; set; } = null!;
+        public DbSet<MedicalProfile> MedicalProfile { get; set; } = null!;
 
         protected BaseDbContext(DbContextOptions contextOptions)
            : base(contextOptions)
@@ -20,7 +20,7 @@ namespace datalayer
                 .HasMany(medicalProfile => medicalProfile.Clinic)
                 .WithMany(clinic => clinic.MedicalProfile);
             modelBuilder.Entity<MedicalProfile>()
-                .HasMany(medicalProfile => medicalProfile.Doctors)
+                .HasMany(medicalProfile => medicalProfile.Doctor)
                 .WithMany(doctor => doctor.MedicalProfile);
 
             modelBuilder.Entity<Clinic>()

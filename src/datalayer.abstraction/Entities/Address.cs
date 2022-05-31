@@ -4,17 +4,12 @@ namespace datalayer.abstraction.Entities
 {
     public class Address
     {
-        [Required(AllowEmptyStrings = false)]
-        public string CountryISO { get; set; }
-        [Required(AllowEmptyStrings = false)]
-        public string Region { get; set; }
-        [Required(AllowEmptyStrings = false)]
-        public string City { get; set; }
-        [Required(AllowEmptyStrings = false)]
-        public string Street { get; set; }
-        [Required]
+        public string CountryISO { get; set; } = null!;
+        public string Region { get; set; } = null!;
+        public string City { get; set; } = null!;
+        public string Street { get; set; } = null!;
         public int HouseNnumber { get; set; }
-        public int HouseBuilding { get; set; }
-        public int Appartament { get; set; }
+        public int? HouseBuilding { get; set; }
+        public int? Appartament { get; set; }
     }
 }

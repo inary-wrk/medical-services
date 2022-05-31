@@ -1,12 +1,9 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using businesslogic.Features.DoctorFeatures;
 using MediatR;
-using medical_services.api.Controllers.ApiContracts;
 using businesslogic.abstraction.Dto;
 using Microsoft.AspNetCore.Mvc;
-using businesslogic.abstraction.Contracts;
 
 namespace medical_services.api.Controllers
 {
@@ -16,41 +13,46 @@ namespace medical_services.api.Controllers
     public class DoctorController : Controller
     {
         private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
 
-        public DoctorController(IMediator mediator, IMapper mapper)
+        public DoctorController(IMediator mediator)
         {
             _mediator = mediator;
-            _mapper = mapper;
         }
 
         [HttpGet("{id}")]
-        public async Task<DoctorApi.Response.Details> GetDoctorDetails(long id, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetDoctorDetails(long id, CancellationToken cancellationToken)
         {
-            var query = new DoctorDetails.Query(id);
-            var result = await _mediator.Send(query, cancellationToken);
-            return _mapper.Map<DoctorDto.Doctor, DoctorApi.Response.Details>(result);
+            var result = await _mediator.Send(new DoctorDetails.Query(id), cancellationToken);
+            return result.Match<IActionResult>(
+                success => Ok(success),
+                notFound => NotFound("Doctor with given id does not exist"));
         }
 
         [HttpPost("create")]
-        public async Task<DoctorApi.Response.DoctorId> CreateDoctor([FromBody] DoctorApi.Request.CreateTest doctor, CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateDoctor([FromBody]DoctorDto.Request.Create doctor, CancellationToken cancellationToken)
         {
-            var doctorDto = _mapper.Map<DoctorApi.Request.CreateTest, DoctorDto.Request.Create>(doctor);
-            var command = new DoctorCreate.Command(doctorDto);
-            var result = await _mediator.Send(command, cancellationToken);
-            return new DoctorApi.Response.DoctorId(result);
+            var result = await _mediator.Send(new DoctorCreate.Command(doctor), cancellationToken);
+            return Ok(result);
         }
 
-        [HttpPut("{id}")]
-        public async void UpdateDoctor(long id, [FromBody] DoctorDto.Request.Create doctor, CancellationToken cancellationToken)
+        [HttpPut("{id}/update")]
+        public async Task<IActionResult> UpdateDoctor(long id, [FromBody]DoctorDto.Request.Update doctor, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+           var result = await _mediator.Send(new DoctorUpdate.Command(id, doctor), cancellationToken);
+
+            return result.Match<IActionResult>(
+                success => Ok(success),
+                notFound => NotFound("Doctor with given id does not exist"));
         }
 
-        [HttpDelete("{id}")]
-        public async void DeleteDoctor(long id, CancellationToken cancellationToken)
+        [HttpDelete("{id}/delete")]
+        public async Task<IActionResult> DeleteDoctor(long id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+           var result = await _mediator.Send(new DoctorDelete.Command(id), cancellationToken);
+
+            return result.Match<IActionResult>(
+                success => Ok(),
+                notFound => NotFound("Doctor with given id does not exist"));
         }
     }
 }

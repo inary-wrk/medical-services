@@ -4,7 +4,7 @@ using businesslogic.abstraction.ValueObjects;
 
 namespace businesslogic.abstraction.Dto
 {
-    public static class DoctorDto
+    public static partial class DoctorDto
     {
         public static class Request
         {
@@ -12,24 +12,40 @@ namespace businesslogic.abstraction.Dto
                                  string LastName,
                                  string? Surname,
                                  string? Description,
-                                 Uri? PhotoUrl);
-            //IList<string> MedicalProfile,
-            //                   IList<string> Clinic);
+                                 Uri? PhotoUrl,
+                                 IReadOnlyList<long> MedicalProfileId,
+                                 IReadOnlyList<long> ClinicId);
+
+            public record Update(string FirstName,
+                                 string LastName,
+                                 string? Surname,
+                                 string? Description,
+                                 Uri? PhotoUrl,
+                                 IReadOnlyList<long> MedicalProfileId,
+                                 IReadOnlyList<long> ClinicId);
         }
 
-        public record Doctor(Id Id,
-                             ValueObjects.FullName FullName,
-                             ValueObjects.DoctorDescription Description,
-                             Uri? PhotoUrl,
-                             List<MedicalProfileDto.MedicalProfile> MedicalProfile,
-                             List<ClinicDto.Clinic> Clinic);
-
-        public static class ValueObjects
+        public static class Response
         {
-            public record DoctorDescription(string Description);
-            public record FullName(string FirstName,
-                                   string LastName,
-                                   string Surname);
+            public record Details(long Id,
+                                  string FirstName,
+                                  string LastName,
+                                  string Surname,
+                                  string Description,
+                                  Uri? PhotoUrl,
+                                  IReadOnlyCollection<MedicalProfile> MedicalProfile,
+                                  IReadOnlyCollection<Clinic> Clinic);
+
+            public record MedicalProfile(long Id,
+                                        string Name,
+                                        string Description);
+            
+            public record Clinic(long Id,
+                                 string Name,
+                                 string Description,
+                                 string Address,
+                                 MapPointDto? MapPoint,
+                                 Uri? PhotoUrl);
         }
     }
 }

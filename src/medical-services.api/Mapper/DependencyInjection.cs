@@ -10,8 +10,8 @@ namespace medical_services.api.Mapper
             services.AddScoped<IMapper, MapperService>();
 
             services.Scan(scan => scan
-                .FromAssembliesOf(typeof(IMapperCodeGen<,>))
-                .AddClasses(classes => classes.AssignableTo(typeof(IMapperCodeGen<,>)))
+                .FromAssembliesOf(typeof(IMapCodeGen<,>))
+                .AddClasses(classes => classes.AssignableTo(typeof(IMapCodeGen<,>)))
                 .AsImplementedInterfaces()
                 .WithScopedLifetime());
             return services;

@@ -1,14 +1,15 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using datalayer.abstraction.Entities;
 using datalayer.abstraction.Repositories;
+using Microsoft.EntityFrameworkCore;
+using OneOf;
+using OneOf.Types;
 
 namespace datalayer.Repositories
 {
-    public class DoctorCommandRepository : IDoctorCommandRepository
+    internal class DoctorCommandRepository : IDoctorCommandRepository
     {
-
         private readonly CommandDbContext _dbContext;
 
         public DoctorCommandRepository(CommandDbContext dbContext)
@@ -16,21 +17,40 @@ namespace datalayer.Repositories
             _dbContext = dbContext;
         }
 
-        async Task<Doctor> IDoctorCommandRepository.AddAsync(Doctor doctor, CancellationToken cancellationToken)
+        async Task<Doctor> IDoctorCommandRepository.CreateAsync(Doctor doctor, CancellationToken cancellationToken)
         {
             _dbContext.Doctor.Add(doctor);
             await _dbContext.SaveChangesAsync(cancellationToken);
             return doctor;
         }
 
-        Task IDoctorCommandRepository.DeleteAsync(long id, CancellationToken cancellationToken)
+        async Task<OneOf<Success, NotFound>> IDoctorCommandRepository.DeleteAsync(long id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var doctor = await _dbContext.Doctor.FindAsync(new object[] { id }, cancellationToken);
+            if (doctor is null)
+                return new NotFound();
+
+            _dbContext.Doctor.Remove(doctor);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return new Success();
         }
 
-        Task<Doctor> IDoctorCommandRepository.UpdateAsync(Doctor doctor, CancellationToken cancellationToken)
+        async Task<OneOf<Doctor, NotFound>> IDoctorCommandRepository.UpdateAsync(long id, Doctor doctor, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var dbDoctor = await _dbContext.Doctor.FindAsync(new object[] { id }, cancellationToken);
+            if (dbDoctor is null)
+                return new NotFound();
+
+            dbDoctor.FirstName = doctor.FirstName ?? dbDoctor.FirstName;
+            dbDoctor.LastName = doctor.LastName ?? dbDoctor.LastName;
+            dbDoctor.Surname = doctor.Surname ?? dbDoctor.Surname;
+            dbDoctor.Description = doctor.Description ?? dbDoctor.Description;
+            dbDoctor.PhotoUrl = doctor.PhotoUrl ?? dbDoctor.PhotoUrl;
+            dbDoctor.MedicalProfile = doctor.MedicalProfile ?? dbDoctor.MedicalProfile;
+            dbDoctor.Clinic = doctor.Clinic ?? dbDoctor.Clinic;
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return dbDoctor;
         }
     }
 }

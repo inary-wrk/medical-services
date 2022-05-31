@@ -6,9 +6,11 @@ namespace medical_services.api.Mapper.EtityConfigs
 {
     internal static class ClinicConfig
     {
-        [Mapper]
+        [Mapper(IsInternal = true)]
         internal interface IClinicMapper
-            : IMapperCodeGen<Clinic, ClinicDto.Clinic>
+            : IMapCodeGen<Clinic, ClinicDto.Response.Details>,
+            IMapCodeGen<ClinicDto.Request.Create, Clinic>,
+            IMapCodeGen<ClinicDto.Request.Update, Clinic>
         {
         }
 
@@ -16,11 +18,16 @@ namespace medical_services.api.Mapper.EtityConfigs
         {
             public void Register(TypeAdapterConfig config)
             {
-                config.NewConfig<Clinic, ClinicDto.Clinic>()
-                    .Map(dest => dest.Address, src => src.Address);
+                config.NewConfig<Address, ClinicDto.ValueObject.Address>()
+                    .MapToConstructor(true)
+                    .ConstructUsing(src => new (src.CountryISO,
+                                                                         src.Region,
+                                                                         src.Street,
+                                                                         src.City,
+                                                                         src.HouseNnumber,
+                                                                         src.HouseBuilding,
+                                                                         src.Appartament));
 
-                config.NewConfig<string, ClinicDto.ValueObjects.ClinicDescription>()
-                    .MapWith(src => new ClinicDto.ValueObjects.ClinicDescription(src));
             }
         }
     }

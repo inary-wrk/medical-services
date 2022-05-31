@@ -9,21 +9,14 @@ namespace medical_services.api.Mapper
     {
         public void Register(TypeAdapterConfig config)
         {
-            TypeAdapterConfig.GlobalSettings.Default.IgnoreNullValues(true);
-
-            config.NewConfig<long, Id>()
-                .MapWith(src => (Id)src);
-
-            config.NewConfig<Id, long>()
-                .MapWith(src => (long)src);
+            //TypeAdapterConfig.GlobalSettings.Default.IgnoreNullValues(true);
 
             config.NewConfig<MapPoint, MapPointDto?>()
                 .IgnoreNullValues(true)
-                .MapWith(src => new(src.NorthLatitude, src.WesternLongitude));
+                .MapWith(src => new(src.NorthLatitude, src.WesternLongitude), true);
 
             config.NewConfig<string, Uri?>()
-                .IgnoreNullValues(true)
-                .MapWith(src => new(src), true);
+               .MapWith(str => new Uri(str), true);
         }
     }
 }

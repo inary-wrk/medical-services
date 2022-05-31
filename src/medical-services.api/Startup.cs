@@ -1,7 +1,9 @@
 using businesslogic;
 using datalayer;
+using FluentValidation.AspNetCore;
 using MediatR;
 using medical_services.api.Mapper;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -20,14 +22,21 @@ namespace medical_services.api
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.IgnoreNullValues = true;
+            })
+            .AddFluentValidation();
+
             services.AddSwaggerGen(options =>
             {
+                options.SupportNonNullableReferenceTypes();
+                options.CustomSchemaIds(type => type.FullName?.Replace("+", "_"));
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "medical_services.api", Version = "v1" });
             });
+            services.AddFluentValidationRulesToSwagger();
 
             services.AddMediatR(typeof(Startup));
             services.RegisterDatalayer(Configuration);
@@ -35,7 +44,6 @@ namespace medical_services.api
             services.RegisterMapper();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

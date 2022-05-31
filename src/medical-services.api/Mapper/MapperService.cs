@@ -15,14 +15,19 @@ namespace medical_services.api.Mapper
 
         TDestination IMapper.Map<TSource, TDestination>(TSource source)
         {
-            return GetService<IMapperCodeGen<TSource, TDestination>>().Map(source);
+            return GetService<IMapCodeGen<TSource, TDestination>>().Map(source);
         }
 
         private TService GetService<TService>()
             where TService : notnull
         {
             return _serviceProvider.GetService<TService>()
-                ?? throw new InvalidOperationException($"Mapper for type {typeof(TService).FullName} is not registred.");
+                ?? throw new InvalidOperationException($"Mapper from type {typeof(TService).GenericTypeArguments[0]} to {typeof(TService).GenericTypeArguments[1]} is not registred.");
+        }
+
+        TDestination IMapper.Map<TSource, TDestination>(TSource source, TDestination destination)
+        {
+            return GetService<IMapToExistCodeGen<TSource, TDestination>>().Map(source, destination);
         }
     }
 }
