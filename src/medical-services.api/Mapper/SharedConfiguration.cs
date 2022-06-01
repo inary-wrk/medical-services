@@ -5,12 +5,10 @@ using Mapster;
 
 namespace medical_services.api.Mapper
 {
-    internal class CommonConfiguration : IRegister
+    internal class SharedConfiguration : IRegister
     {
         public void Register(TypeAdapterConfig config)
         {
-            //TypeAdapterConfig.GlobalSettings.Default.IgnoreNullValues(true);
-
             config.NewConfig<MapPoint, MapPointDto?>()
                 .IgnoreNullValues(true)
                 .MapWith(src => new(src.NorthLatitude, src.WesternLongitude), true);

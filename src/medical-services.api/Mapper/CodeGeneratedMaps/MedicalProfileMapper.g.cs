@@ -26,49 +26,32 @@ namespace medical_services.api.Mapper.CodeGeneratedMaps
         }
         public MedicalProfileDto.Response.Details Map(MedicalProfile p3)
         {
-            return p3 == null ? null : new MedicalProfileDto.Response.Details(p3.Name, p3.Description, funcMain1(p3.Clinic), funcMain2(p3.Doctor));
+            return p3 == null ? null : new MedicalProfileDto.Response.Details(p3.Name, p3.Description, funcMain1(p3.Doctors == null ? null : (int?)p3.Doctors.Count));
         }
-        
-        private IReadOnlyCollection<MedicalProfileDto.Response.Clinic> funcMain1(ICollection<Clinic> p4)
-        {
-            if (p4 == null)
-            {
-                return null;
-            }
-            IReadOnlyCollection<MedicalProfileDto.Response.Clinic> result = new List<MedicalProfileDto.Response.Clinic>(p4.Count);
-            
-            ICollection<MedicalProfileDto.Response.Clinic> list = (ICollection<MedicalProfileDto.Response.Clinic>)result;
-            
-            IEnumerator<Clinic> enumerator = p4.GetEnumerator();
-            
-            while (enumerator.MoveNext())
-            {
-                Clinic item = enumerator.Current;
-                list.Add(item == null ? null : new MedicalProfileDto.Response.Clinic(item.Id, item.Name, item.Description));
-            }
-            return result;
-            
-        }
-        
-        private IReadOnlyCollection<MedicalProfileDto.Response.Doctor> funcMain2(ICollection<Doctor> p5)
+        public IReadOnlyList<MedicalProfileDto.Response.Details> Map(IReadOnlyList<ValueTuple<MedicalProfile, int>> p5)
         {
             if (p5 == null)
             {
                 return null;
             }
-            IReadOnlyCollection<MedicalProfileDto.Response.Doctor> result = new List<MedicalProfileDto.Response.Doctor>(p5.Count);
+            IReadOnlyList<MedicalProfileDto.Response.Details> result = new List<MedicalProfileDto.Response.Details>();
             
-            ICollection<MedicalProfileDto.Response.Doctor> list = (ICollection<MedicalProfileDto.Response.Doctor>)result;
+            ICollection<MedicalProfileDto.Response.Details> list = (ICollection<MedicalProfileDto.Response.Details>)result;
             
-            IEnumerator<Doctor> enumerator = p5.GetEnumerator();
+            IEnumerator<ValueTuple<MedicalProfile, int>> enumerator = p5.GetEnumerator();
             
             while (enumerator.MoveNext())
             {
-                Doctor item = enumerator.Current;
-                list.Add(item == null ? null : new MedicalProfileDto.Response.Doctor(item.Id, item.FirstName, item.LastName, item.Surname, item.Description, item.PhotoUrl == null ? null : new Uri(item.PhotoUrl)));
+                ValueTuple<MedicalProfile, int> item = enumerator.Current;
+                list.Add(new MedicalProfileDto.Response.Details(item.Item1.Name, item.Item1.Description, item.Item2));
             }
             return result;
             
+        }
+        
+        private int funcMain1(int? p4)
+        {
+            return p4 == null ? 0 : (int)p4;
         }
     }
 }

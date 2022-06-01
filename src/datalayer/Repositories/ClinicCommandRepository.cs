@@ -13,7 +13,6 @@ namespace datalayer.Repositories
 {
     internal class ClinicCommandRepository : IClinicCommandRepository
     {
-
         private readonly CommandDbContext _dbContext;
 
         public ClinicCommandRepository(CommandDbContext dbContext)
@@ -64,8 +63,8 @@ namespace datalayer.Repositories
             await _dbContext.SaveChangesAsync(cancellationToken);
             return dbClinic;
         }
-
-        private void UpdateAddress(Address dbAddress, Address address)
+        
+        private static void UpdateAddress(Address dbAddress, Address address)
         {
             if (address.CountryISO is not null)
                 dbAddress.CountryISO = address.CountryISO;

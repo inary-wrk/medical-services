@@ -19,14 +19,13 @@ namespace medical_services.api.Controllers
         }
 
         [HttpGet]
-        [Route("{id}")]
-        public async Task<IActionResult> GetMedicalProfileAsync(long id, CancellationToken cancellationToken)
+        [Route("{city}")]
+        // TODO: change city to (city, region, country) ??, city not found
+        public async Task<IActionResult> GetMedicalProfilesAsync(string city, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new MedicalProfileDetails.Query(id), cancellationToken);
+            var result = await _mediator.Send(new MedicalProfileDetails.Query(city), cancellationToken);
 
-            return result.Match<IActionResult>(
-                 sc => Ok(sc),
-                 nf => NotFound());
+            return Ok(result);
         }
 
         [HttpPost]

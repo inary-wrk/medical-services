@@ -21,11 +21,11 @@ namespace datalayer.Repositories
             _dbContext = context;
         }
 
-        async Task<OneOf<MedicalProfile, NotFound>> IMedicalProfileQueryRepository.GetByIdAsync(long id, CancellationToken cancellationToken)
+        async Task<IReadOnlyList<(MedicalProfile, int doctorsCount)>> IMedicalProfileQueryRepository.GetListAsync(string city, CancellationToken cancellationToken)
         {
-            var result = await _dbContext.MedicalProfile.FindAsync(new object[]{id}, cancellationToken);
-            
-            return result is null ? new NotFound() : result;
+            return await _dbContext.MedicalProfile
+                .Select(prof => new ValueTuple<MedicalProfile, int>(prof, prof.Clinics.Count(c => c.Address.City == city)))
+                .ToListAsync(cancellationToken);
         }
     }
 }

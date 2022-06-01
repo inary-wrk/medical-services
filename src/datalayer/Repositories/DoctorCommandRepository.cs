@@ -47,7 +47,7 @@ namespace datalayer.Repositories
             dbDoctor.Description = doctor.Description ?? dbDoctor.Description;
             dbDoctor.PhotoUrl = doctor.PhotoUrl ?? dbDoctor.PhotoUrl;
             dbDoctor.MedicalProfile = doctor.MedicalProfile ?? dbDoctor.MedicalProfile;
-            dbDoctor.Clinic = doctor.Clinic ?? dbDoctor.Clinic;
+            dbDoctor.Clinics = doctor.Clinics ?? dbDoctor.Clinics;
 
             await _dbContext.SaveChangesAsync(cancellationToken);
             return dbDoctor;

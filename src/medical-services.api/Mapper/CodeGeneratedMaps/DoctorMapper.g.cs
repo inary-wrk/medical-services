@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using businesslogic.abstraction.Dto;
-using businesslogic.abstraction.ValueObjects;
 using datalayer.abstraction.Entities;
 using medical_services.api.Mapper.EtityConfigs;
 
@@ -33,7 +32,7 @@ namespace medical_services.api.Mapper.CodeGeneratedMaps
         }
         public DoctorDto.Response.Details Map(Doctor p3)
         {
-            return p3 == null ? null : new DoctorDto.Response.Details(p3.Id, p3.FirstName, p3.LastName, p3.Surname, p3.Description, p3.PhotoUrl == null ? null : new Uri(p3.PhotoUrl), funcMain1(p3.MedicalProfile), funcMain2(p3.Clinic));
+            return p3 == null ? null : new DoctorDto.Response.Details(p3.Id, p3.FirstName, p3.LastName, p3.Surname, p3.Description, p3.PhotoUrl == null ? null : new Uri(p3.PhotoUrl), funcMain1(p3.MedicalProfile), null);
         }
         
         private IReadOnlyCollection<DoctorDto.Response.MedicalProfile> funcMain1(ICollection<MedicalProfile> p4)
@@ -52,27 +51,6 @@ namespace medical_services.api.Mapper.CodeGeneratedMaps
             {
                 MedicalProfile item = enumerator.Current;
                 list.Add(item == null ? null : new DoctorDto.Response.MedicalProfile(item.Id, item.Name, item.Description));
-            }
-            return result;
-            
-        }
-        
-        private IReadOnlyCollection<DoctorDto.Response.Clinic> funcMain2(ICollection<Clinic> p5)
-        {
-            if (p5 == null)
-            {
-                return null;
-            }
-            IReadOnlyCollection<DoctorDto.Response.Clinic> result = new List<DoctorDto.Response.Clinic>(p5.Count);
-            
-            ICollection<DoctorDto.Response.Clinic> list = (ICollection<DoctorDto.Response.Clinic>)result;
-            
-            IEnumerator<Clinic> enumerator = p5.GetEnumerator();
-            
-            while (enumerator.MoveNext())
-            {
-                Clinic item = enumerator.Current;
-                list.Add(item == null ? null : new DoctorDto.Response.Clinic(item.Id, item.Name, item.Description, item.Address == null ? null : item.Address.ToString(), item.MapPoint == null ? null : new MapPointDto?(new MapPointDto(item.MapPoint.NorthLatitude, item.MapPoint.WesternLongitude)), item.PhotoUrl == null ? null : new Uri(item.PhotoUrl)));
             }
             return result;
             

@@ -38,6 +38,5 @@ namespace businesslogic.Features.ClinicFeatures
                     nf => new NotFound());
             }
         }
-
     }
 }

@@ -26,13 +26,13 @@ namespace datalayer.Repositories
             await _dbContext.SaveChangesAsync(cancellationToken);
             return medicalProfile;
         }
-        
+
         async Task<OneOf<Success, NotFound>> IMedicalProfileCommandRepository.DeleteAsync(long id, CancellationToken cancellationToken)
         {
             var medicalProfile = await _dbContext.MedicalProfile.FindAsync(new object[] { id }, cancellationToken);
             if (medicalProfile is null)
                 return new NotFound();
-            
+
             _dbContext.MedicalProfile.Remove(medicalProfile);
             await _dbContext.SaveChangesAsync(cancellationToken);
             return new Success();
@@ -44,8 +44,12 @@ namespace datalayer.Repositories
             if (medicalProfile is null)
                 return new NotFound();
 
-            dbMedicalProfile.Name = medicalProfile.Name ?? dbMedicalProfile.Name;
-            dbMedicalProfile.Description = medicalProfile.Description ?? dbMedicalProfile.Description;
+            if (medicalProfile.Name is not null)
+                dbMedicalProfile.Name = medicalProfile.Name;
+
+            if (medicalProfile.Description is not null)
+                dbMedicalProfile.Description = medicalProfile.Description;
+
             await _dbContext.SaveChangesAsync(cancellationToken);
             return dbMedicalProfile;
         }

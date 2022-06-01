@@ -7,14 +7,15 @@ using datalayer.abstraction.Repositories;
 using datalayer.abstraction.Entities;
 using OneOf.Types;
 using OneOf;
+using System.Collections.Generic;
 
 namespace businesslogic.Features.MedicalProfileFeatures
 {
     public static class MedicalProfileDetails
     {
-        public record Query(long Id) : IQueryRequest<OneOf<MedicalProfileDto.Response.Details, NotFound>>;
+        public record Query(string City) : IQueryRequest<IReadOnlyList<MedicalProfileDto.Response.Details>>;
         
-        public class Handler : IRequestHandler<Query, OneOf<MedicalProfileDto.Response.Details, NotFound>>
+        public class Handler : IRequestHandler<Query, IReadOnlyList<MedicalProfileDto.Response.Details>>
         {
             private readonly IMedicalProfileQueryRepository _repository;
             private readonly IMapper _mapper;
@@ -25,13 +26,11 @@ namespace businesslogic.Features.MedicalProfileFeatures
                 _mapper = mapper;
             }
 
-            public async Task<OneOf<MedicalProfileDto.Response.Details, NotFound>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<IReadOnlyList<MedicalProfileDto.Response.Details>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var result = await _repository.GetByIdAsync(request.Id, cancellationToken);
-                
-                return result.Match<OneOf<MedicalProfileDto.Response.Details, NotFound>>(
-                    sc => _mapper.Map<MedicalProfile, MedicalProfileDto.Response.Details>(sc),
-                    nf => new NotFound());
+                var result = await _repository.GetListAsync(request.City, cancellationToken);
+
+                return _mapper.Map<IReadOnlyList<(MedicalProfile, int doctorsCount)>, IReadOnlyList<MedicalProfileDto.Response.Details>>(result);
             }
         }
     }

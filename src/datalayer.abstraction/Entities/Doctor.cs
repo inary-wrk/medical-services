@@ -12,6 +12,6 @@ namespace datalayer.abstraction.Entities
         public string? PhotoUrl { get; set; }
 
         public ICollection<MedicalProfile> MedicalProfile { get; set; } = null!;
-        public ICollection<Clinic> Clinic { get; set; } = null!;
+        public ICollection<Clinic> Clinics { get; set; } = null!;
     }
 }

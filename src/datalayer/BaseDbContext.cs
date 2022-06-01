@@ -17,15 +17,18 @@ namespace datalayer
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<MedicalProfile>()
-                .HasMany(medicalProfile => medicalProfile.Clinic)
+                .HasMany(medicalProfile => medicalProfile.Clinics)
                 .WithMany(clinic => clinic.MedicalProfile);
             modelBuilder.Entity<MedicalProfile>()
-                .HasMany(medicalProfile => medicalProfile.Doctor)
+                .HasMany(medicalProfile => medicalProfile.Doctors)
                 .WithMany(doctor => doctor.MedicalProfile);
+            modelBuilder.Entity<MedicalProfile>()
+                .Property(p=>p.DoctorCount)
+                .HasComputedColumnSql("", true);
 
             modelBuilder.Entity<Clinic>()
                 .HasMany(clinic => clinic.Doctor)
-                .WithMany(doctor => doctor.Clinic);
+                .WithMany(doctor => doctor.Clinics);
             modelBuilder.Entity<Clinic>()
                 .OwnsOne(clinic => clinic.Address);
             modelBuilder.Entity<Clinic>()

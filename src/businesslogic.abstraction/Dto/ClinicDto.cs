@@ -22,7 +22,7 @@ namespace businesslogic.abstraction.Dto
 
         public static class Response
         {
-            public record Details(long id,
+            public record Details(long Id,
                                   string Name,
                                   ValueObject.Address Address,
                                   MapPointDto? MapPoint,
