@@ -14,9 +14,11 @@ namespace migrations.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
+                    Address_PostalCode = table.Column<int>(type: "integer", nullable: false),
                     Address_CountryISO = table.Column<string>(type: "text", nullable: false),
                     Address_Region = table.Column<string>(type: "text", nullable: false),
                     Address_City = table.Column<string>(type: "text", nullable: false),
+                    Address_CityCode = table.Column<string>(type: "text", nullable: false),
                     Address_Street = table.Column<string>(type: "text", nullable: false),
                     Address_HouseNnumber = table.Column<int>(type: "integer", nullable: false),
                     Address_HouseBuilding = table.Column<int>(type: "integer", nullable: true),
@@ -87,39 +89,15 @@ namespace migrations.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ClinicMedicalProfile",
-                columns: table => new
-                {
-                    ClinicId = table.Column<long>(type: "bigint", nullable: false),
-                    MedicalProfileId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ClinicMedicalProfile", x => new { x.ClinicId, x.MedicalProfileId });
-                    table.ForeignKey(
-                        name: "FK_ClinicMedicalProfile_Clinic_ClinicId",
-                        column: x => x.ClinicId,
-                        principalTable: "Clinic",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ClinicMedicalProfile_MedicalProfile_MedicalProfileId",
-                        column: x => x.MedicalProfileId,
-                        principalTable: "MedicalProfile",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "DoctorMedicalProfile",
                 columns: table => new
                 {
                     DoctorsId = table.Column<long>(type: "bigint", nullable: false),
-                    MedicalProfileId = table.Column<long>(type: "bigint", nullable: false)
+                    MedicalProfilesId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DoctorMedicalProfile", x => new { x.DoctorsId, x.MedicalProfileId });
+                    table.PrimaryKey("PK_DoctorMedicalProfile", x => new { x.DoctorsId, x.MedicalProfilesId });
                     table.ForeignKey(
                         name: "FK_DoctorMedicalProfile_Doctor_DoctorsId",
                         column: x => x.DoctorsId,
@@ -127,12 +105,42 @@ namespace migrations.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DoctorMedicalProfile_MedicalProfile_MedicalProfileId",
-                        column: x => x.MedicalProfileId,
+                        name: "FK_DoctorMedicalProfile_MedicalProfile_MedicalProfilesId",
+                        column: x => x.MedicalProfilesId,
                         principalTable: "MedicalProfile",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "ClinicDoctorMedicalProfile",
+                columns: table => new
+                {
+                    MedicalProfilesId = table.Column<long>(type: "bigint", nullable: false),
+                    ClinicDoctorsClinicId = table.Column<long>(type: "bigint", nullable: false),
+                    ClinicDoctorsDoctorId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClinicDoctorMedicalProfile", x => new { x.MedicalProfilesId, x.ClinicDoctorsClinicId, x.ClinicDoctorsDoctorId });
+                    table.ForeignKey(
+                        name: "FK_ClinicDoctorMedicalProfile_ClinicDoctor_ClinicDoctorsClinic~",
+                        columns: x => new { x.ClinicDoctorsClinicId, x.ClinicDoctorsDoctorId },
+                        principalTable: "ClinicDoctor",
+                        principalColumns: new[] { "ClinicId", "DoctorId" },
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ClinicDoctorMedicalProfile_MedicalProfile_MedicalProfilesId",
+                        column: x => x.MedicalProfilesId,
+                        principalTable: "MedicalProfile",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clinic_Address_CityCode",
+                table: "Clinic",
+                column: "Address_CityCode");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ClinicDoctor_DoctorId",
@@ -140,35 +148,35 @@ namespace migrations.Migrations
                 column: "DoctorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ClinicMedicalProfile_MedicalProfileId",
-                table: "ClinicMedicalProfile",
-                column: "MedicalProfileId");
+                name: "IX_ClinicDoctorMedicalProfile_ClinicDoctorsClinicId_ClinicDoct~",
+                table: "ClinicDoctorMedicalProfile",
+                columns: new[] { "ClinicDoctorsClinicId", "ClinicDoctorsDoctorId" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_DoctorMedicalProfile_MedicalProfileId",
+                name: "IX_DoctorMedicalProfile_MedicalProfilesId",
                 table: "DoctorMedicalProfile",
-                column: "MedicalProfileId");
+                column: "MedicalProfilesId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ClinicDoctor");
-
-            migrationBuilder.DropTable(
-                name: "ClinicMedicalProfile");
+                name: "ClinicDoctorMedicalProfile");
 
             migrationBuilder.DropTable(
                 name: "DoctorMedicalProfile");
+
+            migrationBuilder.DropTable(
+                name: "ClinicDoctor");
+
+            migrationBuilder.DropTable(
+                name: "MedicalProfile");
 
             migrationBuilder.DropTable(
                 name: "Clinic");
 
             migrationBuilder.DropTable(
                 name: "Doctor");
-
-            migrationBuilder.DropTable(
-                name: "MedicalProfile");
         }
     }
 }

@@ -4,9 +4,11 @@ namespace datalayer.abstraction.Entities
 {
     public class Address
     {
+        public int PostalCode { get; set; }
         public string CountryISO { get; set; } = null!;
         public string Region { get; set; } = null!;
         public string City { get; set; } = null!;
+        public string CityCode { get; set; } = null!;
         public string Street { get; set; } = null!;
         public int HouseNnumber { get; set; }
         public int? HouseBuilding { get; set; }

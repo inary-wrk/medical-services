@@ -19,34 +19,22 @@ namespace migrations.Migrations
                 .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("ClinicDoctor", b =>
+            modelBuilder.Entity("ClinicDoctorMedicalProfile", b =>
                 {
-                    b.Property<long>("ClinicId")
+                    b.Property<long>("MedicalProfilesId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("DoctorId")
+                    b.Property<long>("ClinicDoctorsClinicId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("ClinicId", "DoctorId");
-
-                    b.HasIndex("DoctorId");
-
-                    b.ToTable("ClinicDoctor");
-                });
-
-            modelBuilder.Entity("ClinicMedicalProfile", b =>
-                {
-                    b.Property<long>("ClinicId")
+                    b.Property<long>("ClinicDoctorsDoctorId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("MedicalProfileId")
-                        .HasColumnType("bigint");
+                    b.HasKey("MedicalProfilesId", "ClinicDoctorsClinicId", "ClinicDoctorsDoctorId");
 
-                    b.HasKey("ClinicId", "MedicalProfileId");
+                    b.HasIndex("ClinicDoctorsClinicId", "ClinicDoctorsDoctorId");
 
-                    b.HasIndex("MedicalProfileId");
-
-                    b.ToTable("ClinicMedicalProfile");
+                    b.ToTable("ClinicDoctorMedicalProfile");
                 });
 
             modelBuilder.Entity("DoctorMedicalProfile", b =>
@@ -54,12 +42,12 @@ namespace migrations.Migrations
                     b.Property<long>("DoctorsId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("MedicalProfileId")
+                    b.Property<long>("MedicalProfilesId")
                         .HasColumnType("bigint");
 
-                    b.HasKey("DoctorsId", "MedicalProfileId");
+                    b.HasKey("DoctorsId", "MedicalProfilesId");
 
-                    b.HasIndex("MedicalProfileId");
+                    b.HasIndex("MedicalProfilesId");
 
                     b.ToTable("DoctorMedicalProfile");
                 });
@@ -84,6 +72,21 @@ namespace migrations.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Clinic");
+                });
+
+            modelBuilder.Entity("datalayer.abstraction.Entities.ClinicDoctor", b =>
+                {
+                    b.Property<long>("ClinicId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("DoctorId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("ClinicId", "DoctorId");
+
+                    b.HasIndex("DoctorId");
+
+                    b.ToTable("ClinicDoctor");
                 });
 
             modelBuilder.Entity("datalayer.abstraction.Entities.Doctor", b =>
@@ -134,32 +137,17 @@ namespace migrations.Migrations
                     b.ToTable("MedicalProfile");
                 });
 
-            modelBuilder.Entity("ClinicDoctor", b =>
+            modelBuilder.Entity("ClinicDoctorMedicalProfile", b =>
                 {
-                    b.HasOne("datalayer.abstraction.Entities.Clinic", null)
-                        .WithMany()
-                        .HasForeignKey("ClinicId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("datalayer.abstraction.Entities.Doctor", null)
-                        .WithMany()
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ClinicMedicalProfile", b =>
-                {
-                    b.HasOne("datalayer.abstraction.Entities.Clinic", null)
-                        .WithMany()
-                        .HasForeignKey("ClinicId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("datalayer.abstraction.Entities.MedicalProfile", null)
                         .WithMany()
-                        .HasForeignKey("MedicalProfileId")
+                        .HasForeignKey("MedicalProfilesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("datalayer.abstraction.Entities.ClinicDoctor", null)
+                        .WithMany()
+                        .HasForeignKey("ClinicDoctorsClinicId", "ClinicDoctorsDoctorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -174,7 +162,7 @@ namespace migrations.Migrations
 
                     b.HasOne("datalayer.abstraction.Entities.MedicalProfile", null)
                         .WithMany()
-                        .HasForeignKey("MedicalProfileId")
+                        .HasForeignKey("MedicalProfilesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -195,6 +183,10 @@ namespace migrations.Migrations
                                 .IsRequired()
                                 .HasColumnType("text");
 
+                            b1.Property<string>("CityCode")
+                                .IsRequired()
+                                .HasColumnType("text");
+
                             b1.Property<string>("CountryISO")
                                 .IsRequired()
                                 .HasColumnType("text");
@@ -203,6 +195,9 @@ namespace migrations.Migrations
                                 .HasColumnType("integer");
 
                             b1.Property<int>("HouseNnumber")
+                                .HasColumnType("integer");
+
+                            b1.Property<int>("PostalCode")
                                 .HasColumnType("integer");
 
                             b1.Property<string>("Region")
@@ -214,6 +209,8 @@ namespace migrations.Migrations
                                 .HasColumnType("text");
 
                             b1.HasKey("ClinicId");
+
+                            b1.HasIndex("CityCode");
 
                             b1.ToTable("Clinic");
 
@@ -246,6 +243,35 @@ namespace migrations.Migrations
                         .IsRequired();
 
                     b.Navigation("MapPoint");
+                });
+
+            modelBuilder.Entity("datalayer.abstraction.Entities.ClinicDoctor", b =>
+                {
+                    b.HasOne("datalayer.abstraction.Entities.Clinic", "Clinic")
+                        .WithMany("DoctorsLink")
+                        .HasForeignKey("ClinicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("datalayer.abstraction.Entities.Doctor", "Doctor")
+                        .WithMany("ClinicsLink")
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Clinic");
+
+                    b.Navigation("Doctor");
+                });
+
+            modelBuilder.Entity("datalayer.abstraction.Entities.Clinic", b =>
+                {
+                    b.Navigation("DoctorsLink");
+                });
+
+            modelBuilder.Entity("datalayer.abstraction.Entities.Doctor", b =>
+                {
+                    b.Navigation("ClinicsLink");
                 });
 #pragma warning restore 612, 618
         }
