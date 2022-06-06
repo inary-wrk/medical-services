@@ -25,9 +25,7 @@ namespace businesslogic.Features.DoctorFeatures
 
             public async Task<DoctorDto.Response.Details> Handle(Command request, CancellationToken cancellationToken)
             {
-                var dbDoctor = _mapper.Map<DoctorDto.Request.Create, Doctor>(request.Doctor);
-                var result = await _repository.CreateAsync(dbDoctor, cancellationToken);
-
+                var result = await _repository.CreateAsync(request.Doctor, cancellationToken);
                 return _mapper.Map<Doctor, DoctorDto.Response.Details>(result);
             }
         }

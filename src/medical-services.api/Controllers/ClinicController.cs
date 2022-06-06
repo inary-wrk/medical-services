@@ -6,52 +6,86 @@ using businesslogic.abstraction.Dto;
 using MediatR;
 using businesslogic.Features.ClinicFeatures;
 using businesslogic.Features.DoctorFeatures;
+using System.Collections.Generic;
 
 namespace medical_services.api.Controllers
 {
     [ApiController]
-    [Route("api/clinic")]
+    [Route("api/clinics")]
     [ApiVersion("1.0")]
     public class ClinicController : Controller
     {
         private readonly IMediator _mediator;
 
-        public ClinicController(IMediator field)
+        public ClinicController(IMediator mediator)
         {
-            _mediator = field;
+            _mediator = mediator;
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetClinicAsync(long id, CancellationToken cancellationToken)
+        [HttpGet("{clinicId}")]
+        public async Task<ActionResult<ClinicDto.Response.Details>> GetClinicById(long clinicId, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new ClinicDetails.Query(id), cancellationToken);
-            return result.Match<IActionResult>(
+            var result = await _mediator.Send(new ClinicDetails.Query(clinicId), cancellationToken);
+            return result.Match<ActionResult<ClinicDto.Response.Details>>(
                 sc => Ok(sc),
                 nf => NotFound());
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateClinicAsync([FromBody]ClinicDto.Request.Create clinic, CancellationToken cancellationToken)
+        [HttpGet("available-cities")]
+        public async Task<ActionResult<IReadOnlyList<ClinicDto.Response.CityCode>>> GetAvailableCities(CancellationToken cancellationToken)
         {
-           var result = await _mediator.Send(new ClinicCreate.Command(clinic), cancellationToken);
+            var result = await _mediator.Send(new AvailableCities.Query(), cancellationToken);
             return Ok(result);
         }
 
-        [HttpPut("{id}/update")]
-        public async Task<IActionResult> UpdateClinicAsync(long id, [FromBody]ClinicDto.Request.Update clinic, CancellationToken cancellationToken)
+        // TODO: Address validation via yandex api?? slug generation
+        [HttpPost]
+        public async Task<ActionResult<ClinicDto.Response.Details>> CreateClinic([FromBody] ClinicDto.Request.Create clinic, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new ClinicUpdate.Command(id, clinic), cancellationToken);
-            return result.Match<IActionResult>(
+            var result = await _mediator.Send(new ClinicCreate.Command(clinic), cancellationToken);
+            return Created(Url.Action(nameof(GetClinicById), new { id = result.Id }), result);
+        }
+
+        [HttpPatch("{clinicId}")]
+        public async Task<ActionResult<ClinicDto.Response.Details>> UpdateClinic(long clinicId,
+                                                                                 [FromBody] ClinicDto.Request.Update clinic,
+                                                                                 CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new ClinicUpdate.Command(clinicId, clinic), cancellationToken);
+            return result.Match<ActionResult<ClinicDto.Response.Details>>(
                 sc => Ok(sc),
                 nf => NotFound());
         }
 
-        [HttpDelete("{id}/delete")]
-        public async Task<IActionResult> DeleteClinicAsync(long id, CancellationToken cancellationToken)
+        [HttpDelete("{clinicId}")]
+        public async Task<ActionResult> DeleteClinic(long clinicId, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new ClinicDelete.Command(id), cancellationToken);
-            return result.Match<IActionResult>(
-                sc => Ok(),
+            var result = await _mediator.Send(new ClinicDelete.Command(clinicId), cancellationToken);
+            return result.Match<ActionResult>(
+                sc => NoContent(),
+                nf => NotFound());
+        }
+
+        [HttpPut("{clinicId}/doctors/{doctorId}")]
+        public async Task<ActionResult<ClinicDto.Response.Details>> UpdateClinicDoctor(long clinicId,
+                                                                                       long doctorId,
+                                                                                       IReadOnlyList<long> medicalProfileIds,
+                                                                                       CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new UpdateClinicDoctor.Command(clinicId, doctorId, medicalProfileIds), cancellationToken);
+            return result.Match<ActionResult<ClinicDto.Response.Details>>(
+                sc => Ok(sc),
+                nf => NotFound());
+        }
+
+        [HttpDelete("{clinicId}/doctors/{doctorId}")]
+        public async Task<ActionResult> DeleteClinicDoctor(long clinicId,
+                                                           long doctorId,
+                                                           CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new DeleteClinicDoctor.Command(clinicId, doctorId), cancellationToken);
+            return result.Match<ActionResult>(
+                sc => NoContent(),
                 nf => NotFound());
         }
     }

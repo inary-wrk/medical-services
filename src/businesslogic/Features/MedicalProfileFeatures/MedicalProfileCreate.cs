@@ -25,9 +25,7 @@ namespace businesslogic.Features.MedicalProfileFeatures
             
             public async Task<MedicalProfileDto.Response.Details> Handle(Command request, CancellationToken cancellationToken)
             {
-                var dbMedicalProfile = _mapper.Map<MedicalProfileDto.Request.Create, MedicalProfile>(request.MedicalProfile);
-                var result = await _repository.CreateAsync(dbMedicalProfile, cancellationToken);
-
+                var result = await _repository.CreateAsync(request.MedicalProfile, cancellationToken);
                 return _mapper.Map<MedicalProfile, MedicalProfileDto.Response.Details>(result);
             }
         }

@@ -1,57 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using datalayer.abstraction.Entities;
 using datalayer.abstraction.Repositories;
 using OneOf.Types;
 using OneOf;
+using businesslogic.abstraction.Dto;
+using businesslogic.abstraction.Contracts;
 
 namespace datalayer.Repositories
 {
     internal class MedicalProfileCommandRepository : IMedicalProfileCommandRepository
     {
         private readonly CommandDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public MedicalProfileCommandRepository(CommandDbContext dbContext)
+        public MedicalProfileCommandRepository(CommandDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
-        async Task<MedicalProfile> IMedicalProfileCommandRepository.CreateAsync(MedicalProfile medicalProfile, CancellationToken cancellationToken)
+        async Task<MedicalProfile> IMedicalProfileCommandRepository.CreateAsync(MedicalProfileDto.Request.Create medicalProfileDto, CancellationToken cancellationToken)
         {
-            _dbContext.MedicalProfile.Add(medicalProfile);
+            var medicalProfileDb = _mapper.Map<MedicalProfileDto.Request.Create, MedicalProfile>(medicalProfileDto);
+            _dbContext.MedicalProfile.Add(medicalProfileDb);
             await _dbContext.SaveChangesAsync(cancellationToken);
-            return medicalProfile;
+            return medicalProfileDb;
         }
 
-        async Task<OneOf<Success, NotFound>> IMedicalProfileCommandRepository.DeleteAsync(long id, CancellationToken cancellationToken)
+        async Task<OneOf<MedicalProfile, NotFound>> IMedicalProfileCommandRepository.UpdateAsync(long id, MedicalProfileDto.Request.Update medicalProfileDto, CancellationToken cancellationToken)
         {
-            var medicalProfile = await _dbContext.MedicalProfile.FindAsync(new object[] { id }, cancellationToken);
-            if (medicalProfile is null)
+            var medicalProfileDb = await _dbContext.MedicalProfile.FindAsync(new object[] { id }, cancellationToken);
+            if (medicalProfileDto is null)
                 return new NotFound();
 
-            _dbContext.MedicalProfile.Remove(medicalProfile);
+            _mapper.Map(medicalProfileDto, medicalProfileDb);
             await _dbContext.SaveChangesAsync(cancellationToken);
-            return new Success();
-        }
-
-        async Task<OneOf<MedicalProfile, NotFound>> IMedicalProfileCommandRepository.UpdateAsync(long id, MedicalProfile medicalProfile, CancellationToken cancellationToken)
-        {
-            var dbMedicalProfile = await _dbContext.MedicalProfile.FindAsync(new object[] { id }, cancellationToken);
-            if (medicalProfile is null)
-                return new NotFound();
-
-            if (medicalProfile.Name is not null)
-                dbMedicalProfile.Name = medicalProfile.Name;
-
-            if (medicalProfile.Description is not null)
-                dbMedicalProfile.Description = medicalProfile.Description;
-
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            return dbMedicalProfile;
+            return medicalProfileDb;
         }
     }
 }

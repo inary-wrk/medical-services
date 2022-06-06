@@ -1,6 +1,8 @@
 ﻿using businesslogic.abstraction.Dto;
+using businesslogic.abstraction.ValueObjects;
 using datalayer.abstraction.Entities;
 using Mapster;
+using SlugGenerator;
 
 namespace medical_services.api.Mapper.EtityConfigs
 {
@@ -10,7 +12,7 @@ namespace medical_services.api.Mapper.EtityConfigs
         internal interface IClinicMapper
             : IMapCodeGen<Clinic, ClinicDto.Response.Details>,
             IMapCodeGen<ClinicDto.Request.Create, Clinic>,
-            IMapCodeGen<ClinicDto.Request.Update, Clinic>
+            IMapToExistCodeGen<ClinicDto.Request.Update, Clinic>
         {
         }
 
@@ -18,16 +20,25 @@ namespace medical_services.api.Mapper.EtityConfigs
         {
             public void Register(TypeAdapterConfig config)
             {
-                config.NewConfig<Address, ClinicDto.ValueObject.Address>()
-                    .MapToConstructor(true)
-                    .ConstructUsing(src => new (src.CountryISO,
-                                                                         src.Region,
-                                                                         src.Street,
-                                                                         src.City,
-                                                                         src.HouseNnumber,
-                                                                         src.HouseBuilding,
-                                                                         src.Appartament));
+                config.NewConfig<ClinicDto.Request.Update, Clinic>()
+                    .IgnoreNullValues(true);
 
+                config.NewConfig<ClinicDto.Request.UpdateAddress?, Address>()
+                    .IgnoreNullValues(true);
+
+                config.NewConfig<ClinicDto.Request.CreateAddress, Address>()
+                    .Map(dest => dest.CityCode, src => src.City.GenerateSlug("-"));
+
+                config.NewConfig<Address, ClinicDto.Response.Address>()
+                    .MapToConstructor(true)
+                    .ConstructUsing(adr => new(adr.CountryISO,
+                                                                        adr.City,
+                                                                        adr.Region,
+                                                                        adr.CityCode,
+                                                                        adr.Street,
+                                                                        adr.HouseNnumber,
+                                                                        adr.HouseBuilding,
+                                                                        adr.Appartament));
             }
         }
     }

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace medical_services.api.Controllers
 {
-    [Route("api/doctor")]
+    [Route("api/doctors")]
     [ApiController]
     [ApiVersion("1.0")]
     public class DoctorController : Controller
@@ -20,39 +20,39 @@ namespace medical_services.api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetDoctorDetails(long id, CancellationToken cancellationToken)
+        public async Task<ActionResult<DoctorDto.Response.Details>> GetDoctorById(long id, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new DoctorDetails.Query(id), cancellationToken);
-            return result.Match<IActionResult>(
-                success => Ok(success),
-                notFound => NotFound("Doctor with given id does not exist"));
+            return result.Match<ActionResult<DoctorDto.Response.Details>>(
+                sc => Ok(sc),
+                nf => NotFound());
         }
 
-        [HttpPost("create")]
-        public async Task<IActionResult> CreateDoctor([FromBody]DoctorDto.Request.Create doctor, CancellationToken cancellationToken)
+        [HttpPost]
+        public async Task<ActionResult<DoctorDto.Response.Details>> CreateDoctor([FromBody]DoctorDto.Request.Create doctor, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new DoctorCreate.Command(doctor), cancellationToken);
-            return Ok(result);
+            return Created(Url.Action(nameof(GetDoctorById), new { id = result.Id }), result);
         }
 
-        [HttpPut("{id}/update")]
-        public async Task<IActionResult> UpdateDoctor(long id, [FromBody]DoctorDto.Request.Update doctor, CancellationToken cancellationToken)
+        [HttpPatch("{id}")]
+        public async Task<ActionResult<DoctorDto.Response.Details>> UpdateDoctor(long id, [FromBody]DoctorDto.Request.Update doctor, CancellationToken cancellationToken)
         {
            var result = await _mediator.Send(new DoctorUpdate.Command(id, doctor), cancellationToken);
 
-            return result.Match<IActionResult>(
-                success => Ok(success),
-                notFound => NotFound("Doctor with given id does not exist"));
+            return result.Match<ActionResult<DoctorDto.Response.Details>>(
+                sc => Ok(sc),
+                nf => NotFound());
         }
 
-        [HttpDelete("{id}/delete")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDoctor(long id, CancellationToken cancellationToken)
         {
            var result = await _mediator.Send(new DoctorDelete.Command(id), cancellationToken);
 
             return result.Match<IActionResult>(
-                success => Ok(),
-                notFound => NotFound("Doctor with given id does not exist"));
+                sc => NoContent(),
+                nf => NotFound());
         }
     }
 }

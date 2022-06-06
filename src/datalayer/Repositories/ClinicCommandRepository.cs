@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using businesslogic.abstraction.Contracts;
+using businesslogic.abstraction.Dto;
 using datalayer.abstraction.Entities;
 using datalayer.abstraction.Repositories;
+using Microsoft.EntityFrameworkCore;
 using OneOf;
 using OneOf.Types;
 
@@ -14,22 +17,25 @@ namespace datalayer.Repositories
     internal class ClinicCommandRepository : IClinicCommandRepository
     {
         private readonly CommandDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public ClinicCommandRepository(CommandDbContext dbContext)
+        public ClinicCommandRepository(CommandDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
-        async Task<Clinic> IClinicCommandRepository.CreateAsync(Clinic clinic, CancellationToken cancellationToken)
+        async Task<Clinic> IClinicCommandRepository.CreateAsync(ClinicDto.Request.Create clinicDto, CancellationToken cancellationToken)
         {
+            var clinic = _mapper.Map<ClinicDto.Request.Create, Clinic>(clinicDto);
             _dbContext.Clinic.Add(clinic);
             await _dbContext.SaveChangesAsync(cancellationToken);
             return clinic;
         }
 
-        async Task<OneOf<Success, NotFound>> IClinicCommandRepository.DeleteAsync(long id, CancellationToken cancellationToken)
+        async Task<OneOf<Success, NotFound>> IClinicCommandRepository.DeleteAsync(long clinicId, CancellationToken cancellationToken)
         {
-            var clinic = await _dbContext.Clinic.FindAsync(new object[] { id }, cancellationToken);
+            var clinic = await _dbContext.Clinic.FindAsync(new object[] { clinicId }, cancellationToken);
             if (clinic is null)
                 return new NotFound();
 
@@ -38,54 +44,61 @@ namespace datalayer.Repositories
             return new Success();
         }
 
-        async Task<OneOf<Clinic, NotFound>> IClinicCommandRepository.UpdateAsync(long id, Clinic clinic, CancellationToken cancellationToken)
+        async Task<OneOf<Clinic, NotFound>> IClinicCommandRepository.UpdateAsync(long clinicId,
+                                                                                 ClinicDto.Request.Update clinicDto,
+                                                                                 CancellationToken cancellationToken)
         {
-            var dbClinic = await _dbContext.Clinic.FindAsync(new object[] { id }, cancellationToken);
-            
+            var dbClinic = await _dbContext.Clinic.FindAsync(new object[] { clinicId }, cancellationToken);
             if (dbClinic is null)
                 return new NotFound();
 
-            if (clinic.Name is not null)
-                dbClinic.Name = clinic.Name;
-
-            if (clinic.Address is not null)
-                UpdateAddress(dbClinic.Address, clinic.Address);
-
-            if (clinic.MapPoint is not null)
-                dbClinic.MapPoint = clinic.MapPoint;
-
-            if (clinic.Description is not null)
-                dbClinic.Description = clinic.Description;
-
-            if (clinic.PhotoUrl is not null)
-                dbClinic.PhotoUrl = clinic.PhotoUrl;
-
+            _mapper.Map(clinicDto, dbClinic);
             await _dbContext.SaveChangesAsync(cancellationToken);
             return dbClinic;
         }
-        
-        private static void UpdateAddress(Address dbAddress, Address address)
+
+        async Task<OneOf<Clinic, NotFound>> IClinicCommandRepository.UpdateClinicDoctorAsync(long clinicId,
+                                                                                             long doctorId,
+                                                                                             IReadOnlyList<long> medicalProfileIds,
+                                                                                             CancellationToken cancellationToken)
         {
-            if (address.CountryISO is not null)
-                dbAddress.CountryISO = address.CountryISO;
+            var existingClinic = await _dbContext.Clinic.Include(c => c.DoctorsLink).SingleOrDefaultAsync(c => c.Id == clinicId, cancellationToken);
+            if (existingClinic is null)
+                return new NotFound();
 
-            if (address.Region is not null)
-                dbAddress.Region = address.Region;
+            var existingDoctor = await _dbContext.Doctor.Include(d => d.MedicalProfiles.Where(mp => medicalProfileIds.Contains(mp.Id)))
+                                                  .SingleOrDefaultAsync(d => d.Id == doctorId, cancellationToken);
+            if (existingDoctor is null)
+                return new NotFound();
 
-            if (address.City is not null)
-                dbAddress.City = address.City;
+            existingClinic.DoctorsLink.Add(new ClinicDoctor
+            {
+                Clinic = existingClinic,
+                Doctor = existingDoctor,
+                MedicalProfiles = existingDoctor.MedicalProfiles
+            });
 
-            if (address.Street is not null)
-                dbAddress.Street = address.Street;
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            // TODO: compare with requested return errors fo entities not found?
+            return existingClinic;
+        }
 
-            if (address.HouseNnumber > 0)
-                dbAddress.HouseNnumber = address.HouseNnumber;
+        async Task<OneOf<Success, NotFound>> IClinicCommandRepository.RemoveClinicDoctorAsync(long clinicId,
+                                                                                              long doctorId,
+                                                                                              CancellationToken cancellationToken)
+        {
+            var existingClinic = await _dbContext.Clinic.Include(c => c.DoctorsLink).SingleOrDefaultAsync(c => c.Id == clinicId, cancellationToken);
+            if (existingClinic is null)
+                return new NotFound();
 
-            if (address.HouseBuilding is not null)
-                dbAddress.HouseBuilding = address.HouseBuilding;
+            var linkToRemove = existingClinic.DoctorsLink.SingleOrDefault(cd => cd.DoctorId == doctorId);
+            if (linkToRemove is null)
+                return new NotFound();
 
-            if (address.Appartament is not null)
-                dbAddress.Appartament = address.Appartament;
+            // TODO: doctor not exist in clinic
+            existingClinic.DoctorsLink.Remove(linkToRemove);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return new Success();
         }
     }
 }

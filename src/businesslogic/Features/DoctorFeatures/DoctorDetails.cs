@@ -27,8 +27,7 @@ namespace businesslogic.Features.DoctorFeatures
 
             public async Task<OneOf<DoctorDto.Response.Details, NotFound>> Handle(Query request, CancellationToken cancellationToken)
             {
-                var result = await _repository.GetByIdAsync(request.Id, cancellationToken);
-
+                var result = await _repository.GetAsync(request.Id, cancellationToken);
                 return result.Match<OneOf<DoctorDto.Response.Details, NotFound>>(
                     sc => _mapper.Map<Doctor, DoctorDto.Response.Details>(sc),
                     nf => new NotFound());

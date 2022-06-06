@@ -8,6 +8,7 @@
 		<DockerfileContext>..\..</DockerfileContext>
 		<Nullable>enable</Nullable>
 		<DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
+		<ServerGarbageCollection>true</ServerGarbageCollection>
 	</PropertyGroup>
 
 	<Target Name="Mapster">
@@ -28,6 +29,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="LazyCache.AspNetCore" Version="2.4.0" />
 		<PackageReference Include="Mapster" Version="7.3.0" />
 		<PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
 		<PackageReference Include="MicroElements.Swashbuckle.FluentValidation" Version="5.6.0" />
@@ -35,6 +37,7 @@
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
 		<PackageReference Include="OneOf" Version="3.0.216" />
 		<PackageReference Include="Scrutor" Version="4.1.0" />
+		<PackageReference Include="SlugGenerator" Version="2.0.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.3" />
 	</ItemGroup>

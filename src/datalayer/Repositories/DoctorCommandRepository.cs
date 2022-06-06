@@ -5,20 +5,25 @@ using datalayer.abstraction.Repositories;
 using Microsoft.EntityFrameworkCore;
 using OneOf;
 using OneOf.Types;
+using businesslogic.abstraction.Dto;
+using businesslogic.abstraction.Contracts;
 
 namespace datalayer.Repositories
 {
     internal class DoctorCommandRepository : IDoctorCommandRepository
     {
         private readonly CommandDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public DoctorCommandRepository(CommandDbContext dbContext)
+        public DoctorCommandRepository(CommandDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
-        async Task<Doctor> IDoctorCommandRepository.CreateAsync(Doctor doctor, CancellationToken cancellationToken)
+        async Task<Doctor> IDoctorCommandRepository.CreateAsync(DoctorDto.Request.Create doctorDto, CancellationToken cancellationToken)
         {
+            var doctor = _mapper.Map<DoctorDto.Request.Create, Doctor>(doctorDto);
             _dbContext.Doctor.Add(doctor);
             await _dbContext.SaveChangesAsync(cancellationToken);
             return doctor;
@@ -35,19 +40,13 @@ namespace datalayer.Repositories
             return new Success();
         }
 
-        async Task<OneOf<Doctor, NotFound>> IDoctorCommandRepository.UpdateAsync(long id, Doctor doctor, CancellationToken cancellationToken)
+        async Task<OneOf<Doctor, NotFound>> IDoctorCommandRepository.UpdateAsync(long id, DoctorDto.Request.Update doctor, CancellationToken cancellationToken)
         {
             var dbDoctor = await _dbContext.Doctor.FindAsync(new object[] { id }, cancellationToken);
             if (dbDoctor is null)
                 return new NotFound();
 
-            dbDoctor.FirstName = doctor.FirstName ?? dbDoctor.FirstName;
-            dbDoctor.LastName = doctor.LastName ?? dbDoctor.LastName;
-            dbDoctor.Surname = doctor.Surname ?? dbDoctor.Surname;
-            dbDoctor.Description = doctor.Description ?? dbDoctor.Description;
-            dbDoctor.PhotoUrl = doctor.PhotoUrl ?? dbDoctor.PhotoUrl;
-            dbDoctor.MedicalProfile = doctor.MedicalProfile ?? dbDoctor.MedicalProfile;
-            dbDoctor.Clinics = doctor.Clinics ?? dbDoctor.Clinics;
+            _mapper.Map(doctor, dbDoctor);
 
             await _dbContext.SaveChangesAsync(cancellationToken);
             return dbDoctor;

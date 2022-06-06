@@ -21,11 +21,27 @@ namespace datalayer.Repositories
             _dbContext = context;
         }
 
-        async Task<IReadOnlyList<(MedicalProfile, int doctorsCount)>> IMedicalProfileQueryRepository.GetListAsync(string city, CancellationToken cancellationToken)
+        async Task<OneOf<MedicalProfile, NotFound>> IMedicalProfileQueryRepository.GetAsync(long id,
+                                                                                            string cityCode,
+                                                                                            CancellationToken cancellationToken)
+        {
+            var result = await _dbContext.MedicalProfile.Include(mp => mp.Doctors.Where(d => d.ClinicsLink.Any(cd => cd.Clinic.Address.CityCode == cityCode)))
+                                                        .SingleOrDefaultAsync(m => m.Id == id, cancellationToken);
+            return result is null ? new NotFound() : result;
+        }
+
+        async Task<IReadOnlyList<(MedicalProfile, int doctorsCount)>> IMedicalProfileQueryRepository.GetListAsync(string cityCode, CancellationToken cancellationToken)
         {
             return await _dbContext.MedicalProfile
-                .Select(prof => new ValueTuple<MedicalProfile, int>(prof, prof.Clinics.Count(c => c.Address.City == city)))
+                .Select(mp => new ValueTuple<MedicalProfile, int>(
+                    mp,
+                    mp.Doctors.Count(d => d.ClinicsLink.Any(c => c.Clinic.Address.CityCode == cityCode))))
                 .ToListAsync(cancellationToken);
+        }
+
+        async Task<IReadOnlyList<MedicalProfile>> IMedicalProfileQueryRepository.GetListAsync(CancellationToken cancellationToken)
+        {
+            return await _dbContext.MedicalProfile.ToListAsync(cancellationToken);
         }
     }
 }

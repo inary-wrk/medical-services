@@ -1,4 +1,6 @@
-﻿namespace businesslogic.abstraction.Contracts
+﻿using System;
+
+namespace businesslogic.abstraction.Contracts
 {
     public interface IMapper
     {
