@@ -18,7 +18,7 @@
 		<Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster extension -a $(TargetDir)$(ProjectName).dll -n medical_services.api.Mapper.CodeGeneratedMaps -o Mapper\CodeGeneratedMaps" />
 		<Exec WorkingDirectory="$(ProjectDir)" Command="dotnet mapster mapper -a $(TargetDir)$(ProjectName).dll -n medical_services.api.Mapper.CodeGeneratedMaps -o Mapper\CodeGeneratedMaps" />
 	</Target>
-	
+
 	<ItemGroup>
 		<GeneratedMaps Include="$(ProjectDir)\Mapper\CodeGeneratedMaps\*.g.cs" />
 	</ItemGroup>
@@ -37,6 +37,10 @@
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
 		<PackageReference Include="OneOf" Version="3.0.216" />
 		<PackageReference Include="Scrutor" Version="4.1.0" />
+		<PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
+		<PackageReference Include="Serilog.Sinks.Console" Version="4.0.1" />
+		<PackageReference Include="Serilog.Sinks.Debug" Version="2.0.0" />
+		<PackageReference Include="SerilogAnalyzer" Version="0.15.0" />
 		<PackageReference Include="SlugGenerator" Version="2.0.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.3" />
