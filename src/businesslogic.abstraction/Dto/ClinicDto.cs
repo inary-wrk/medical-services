@@ -8,8 +8,6 @@ namespace businesslogic.abstraction.Dto
     {
         public static class Request
         {
-            public record DoctorsUpdate(long DoctorId, IReadOnlyList<long> MedicalProfileIds);
-
             public record Create(string Name,
                                  string? Description,
                                  CreateAddress Address,
@@ -43,24 +41,24 @@ namespace businesslogic.abstraction.Dto
         {
             public record MedicalProfile(long Id,
                                          string Name,
-                                         string Description);
+                                         string? Description);
 
             public record Doctor(long Id,
                                  string FirstName,
                                  string LastName,
-                                 string Surname,
-                                 string Description,
-                                 string PhotoUrl,
+                                 string? Surname,
+                                 string? Description,
+                                 string? PhotoUrl,
                                  IReadOnlyList<MedicalProfile> MedicalProfiles);
 
             public record CityCode(string City, string Code);
             
             public record Details(long Id,
                                   string Name,
-                                  string Description,
+                                  string? Description,
                                   Address Address,
                                   MapPointDto? MapPoint,
-                                  string PhotoUrl,
+                                  string? PhotoUrl,
                                   IReadOnlyList<Doctor> Doctors);
 
             public record Address(string CountryISO,

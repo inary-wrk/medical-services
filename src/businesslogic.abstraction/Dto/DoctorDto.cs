@@ -14,12 +14,11 @@ namespace businesslogic.abstraction.Dto
                                  string? Description,
                                  Uri? PhotoUrl);
 
-            public record Update(string FirstName,
-                                 string LastName,
+            public record Update(string? FirstName,
+                                 string? LastName,
                                  string? Surname,
                                  string? Description,
-                                 Uri? PhotoUrl,
-                                 IReadOnlyList<long>? MedicalProfileId);
+                                 Uri? PhotoUrl);
         }
 
         public static class Response
@@ -39,8 +38,8 @@ namespace businesslogic.abstraction.Dto
                                   string Surname,
                                   string Description,
                                   string PhotoUrl,
-                                  IReadOnlyCollection<MedicalProfile> MedicalProfile,
-                                  IReadOnlyCollection<Clinic> Clinic);
+                                  IReadOnlyCollection<MedicalProfile> MedicalProfiles,
+                                  IReadOnlyCollection<Clinic> Clinics);
 
             public record MedicalProfile(long Id,
                                         string Name,

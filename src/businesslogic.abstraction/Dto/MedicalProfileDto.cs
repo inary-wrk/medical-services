@@ -20,14 +20,15 @@ namespace businesslogic.abstraction.Dto
                                  string LastName,
                                  string? Surname,
                                  string? Description,
-                                 Uri? PhotoUrl);
+                                 string? PhotoUrl);
 
             public record Clinic(long Id,
                                  string Name,
                                  string? Description,
                                  Address Address,
                                  MapPointDto? MapPoint,
-                                 Uri? PhotoUrl);
+                                 string? PhotoUrl,
+                                 IReadOnlyList<Doctor> Doctors);
 
             public record Details(long Id,
                                   string Name,
@@ -37,8 +38,7 @@ namespace businesslogic.abstraction.Dto
             public record GetByIdDetails(long Id,
                                          string Name,
                                          string? Description,
-                                         IReadOnlyList<Clinic> Clinics,
-                                         IReadOnlyList<Doctor> Doctors);
+                                         IReadOnlyList<Clinic> Clinics);
 
             public record Address(string CountryISO,
                                   string Region,
