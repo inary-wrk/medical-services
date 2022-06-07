@@ -12,9 +12,9 @@ namespace businesslogic.Features.MedicalProfileFeatures
 {
     public static class MedicalProfileDetails
     {
-        public record Query(long Id, string CityCode) : IQueryRequest<OneOf<MedicalProfileDto.Response.Details, NotFound>>;
+        public record Query(long Id, string CityCode) : IQueryRequest<OneOf<MedicalProfileDto.Response.GetByIdDetails, NotFound>>;
         
-        public class Handler : IRequestHandler<Query, OneOf<MedicalProfileDto.Response.Details, NotFound>>
+        public class Handler : IRequestHandler<Query, OneOf<MedicalProfileDto.Response.GetByIdDetails, NotFound>>
         {
             private readonly IMedicalProfileQueryRepository _repository;
             private readonly IMapper _mapper;
@@ -25,11 +25,11 @@ namespace businesslogic.Features.MedicalProfileFeatures
                 _mapper = mapper;
             }
 
-            public async Task<OneOf<MedicalProfileDto.Response.Details, NotFound>> Handle(Query request, CancellationToken cancellationToken)
+            public async Task<OneOf<MedicalProfileDto.Response.GetByIdDetails, NotFound>> Handle(Query request, CancellationToken cancellationToken)
             {
                 var result = await _repository.GetAsync(request.Id, request.CityCode, cancellationToken);
-                return result.Match<OneOf<MedicalProfileDto.Response.Details, NotFound>>(
-                    sc => _mapper.Map<MedicalProfile, MedicalProfileDto.Response.Details>(sc),
+                return result.Match<OneOf<MedicalProfileDto.Response.GetByIdDetails, NotFound>>(
+                    sc => _mapper.Map<MedicalProfile, MedicalProfileDto.Response.GetByIdDetails>(sc),
                     nf => new NotFound());
             }
         }

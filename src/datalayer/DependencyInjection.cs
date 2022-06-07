@@ -1,8 +1,11 @@
-﻿using datalayer.abstraction.Repositories;
+﻿using System;
+using datalayer.abstraction.Repositories;
 using datalayer.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace datalayer
 {
@@ -10,14 +13,16 @@ namespace datalayer
     {
         public static IServiceCollection RegisterDatalayer(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContextPool<CommandDbContext>(option =>
+            services.AddDbContextPool<CommandDbContext>(options =>
             {
-                option.UseNpgsql(configuration["CONNECTION_STRINGS:COMMANDCONNECTION"]);
+                options.UseNpgsql(configuration["CONNECTION_STRINGS:COMMANDCONNECTION"])
+                .EnableSensitiveDataLogging(true);
             });
-            services.AddDbContextPool<QueryDbContext>(option =>
+            services.AddDbContextPool<QueryDbContext>(options =>
             {
-                option.UseNpgsql(configuration["CONNECTION_STRINGS:QUERYCONNECTION"])
-                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution);
+                options.UseNpgsql(configuration["CONNECTION_STRINGS:QUERYCONNECTION"])
+                .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTrackingWithIdentityResolution)
+                .EnableSensitiveDataLogging(true);
             });
 
             services.AddScoped<IDoctorQueryRepository, DoctorQueryRepository>();
