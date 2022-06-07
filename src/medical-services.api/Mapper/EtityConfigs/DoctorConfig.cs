@@ -18,6 +18,14 @@ namespace medical_services.api.Mapper.EtityConfigs
         {
             public void Register(TypeAdapterConfig config)
             {
+                config.NewConfig<ClinicDoctor, DoctorDto.Response.Clinic>()
+                        .Map(dest => dest, src => src.Clinic)
+                        .Map(dest => dest.Id, src => src.ClinicId);
+                //.Map(dest => dest.MedicalProfiles, src => src.MedicalProfiles);
+
+                config.NewConfig<Doctor, DoctorDto.Response.Details>()
+                        .Map(dest => dest.Clinics, src => src.ClinicsLink)
+                        .Map(dest => dest.MedicalProfiles, src => src.MedicalProfiles);
             }
         }
     }

@@ -39,6 +39,13 @@ namespace medical_services.api.Mapper.EtityConfigs
                                                                         adr.HouseNnumber,
                                                                         adr.HouseBuilding,
                                                                         adr.Appartament));
+
+                config.NewConfig<ClinicDoctor, ClinicDto.Response.Doctor>()
+                        .Map(dest => dest, src => src.Doctor)
+                        .Map(dest => dest.Id, src => src.DoctorId)
+                        .Map(dest => dest.MedicalProfiles, src => src.MedicalProfiles);
+                config.NewConfig<Clinic, ClinicDto.Response.Details>()
+                        .Map(dest => dest.Doctors, src => src.DoctorsLink);
             }
         }
     }

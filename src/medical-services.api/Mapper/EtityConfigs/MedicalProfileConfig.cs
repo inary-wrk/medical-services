@@ -11,8 +11,8 @@ namespace medical_services.api.Mapper.EtityConfigs
         internal interface IMedicalProfileMapper
             : IMapCodeGen<MedicalProfileDto.Request.Create, MedicalProfile>,
             IMapCodeGen<MedicalProfileDto.Request.Update, MedicalProfile>,
-            IMapCodeGen<MedicalProfile, MedicalProfileDto.Response.Details>,
-            IMapCodeGen<IReadOnlyList<(MedicalProfile, int doctorsCount)>, IReadOnlyList<MedicalProfileDto.Response.Details>>
+            IMapCodeGen<MedicalProfile, MedicalProfileDto.Response.GetByIdDetails>,
+            IMapCodeGen<IReadOnlyList<MedicalProfile>, IReadOnlyList<MedicalProfileDto.Response.Details>>
         {
         }
 
@@ -20,10 +20,18 @@ namespace medical_services.api.Mapper.EtityConfigs
         {
             public void Register(TypeAdapterConfig config)
             {
-                config.NewConfig<(MedicalProfile, int doctorsCount), MedicalProfileDto.Response.Details>()
-                    .Map(dest => dest.Name, src => src.Item1.Name)
-                    .Map(dest => dest.Description, src => src.Item1.Description)
-                    .Map(dest => dest.DoctorsCount, src => src.doctorsCount);
+                config.NewConfig<MedicalProfile, MedicalProfileDto.Response.GetByIdDetails>()
+                    .Map(dest => dest.Clinics, src => src.ClinicDoctors);
+
+                config.NewConfig<ClinicDoctor, MedicalProfileDto.Response.Clinic>()
+                    .Map(dest => dest, src => src.Clinic)
+                    .Map(dest => dest.Id, src => src.ClinicId)
+                    .Map(dest => dest.Doctors, src => src.Clinic.DoctorsLink);
+
+                config.NewConfig<ClinicDoctor, MedicalProfileDto.Response.Doctor>()
+                    .Map(dest => dest, src => src.Doctor)
+                    .Map(dest => dest.Id, src => src.DoctorId);
+
             }
         }
     }
