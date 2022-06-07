@@ -6,6 +6,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="6.0.5" />
 	  <PackageReference Include="OneOf" Version="3.0.216" />
 	</ItemGroup>
 

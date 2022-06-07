@@ -10,8 +10,8 @@ namespace datalayer.abstraction.Entities
     {
         public long ClinicId { get; set; }
         public long DoctorId { get; set; }
+        // TODO: doctor - clinic - medicalpofile
         public ICollection<MedicalProfile> MedicalProfiles { get; set; } = null!;
-
         public Clinic Clinic { get;  set; } = null!;
         public Doctor Doctor { get;  set; } = null!;
     }

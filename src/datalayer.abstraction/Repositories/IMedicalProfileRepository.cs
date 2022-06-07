@@ -11,7 +11,7 @@ namespace datalayer.abstraction.Repositories
     public interface IMedicalProfileQueryRepository
     {
         public Task<OneOf<MedicalProfile, NotFound>> GetAsync(long id, string cityCode, CancellationToken cancellationToken = default);
-        public Task<IReadOnlyList<(MedicalProfile, int doctorsCount)>> GetListAsync(string cityCode, CancellationToken cancellationToken = default);
+        public Task<IReadOnlyList<MedicalProfileDto.Response.Details>> GetListAsync(string cityCode, CancellationToken cancellationToken = default);
         public Task<IReadOnlyList<MedicalProfile>> GetListAsync(CancellationToken cancellationToken = default);
     }
 
