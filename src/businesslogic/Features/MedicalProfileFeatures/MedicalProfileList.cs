@@ -14,7 +14,7 @@ namespace businesslogic.Features.MedicalProfileFeatures
 {
     public static class MedicalProfileList
     {
-        public record Query(string? CityCode) : IQueryRequest<IReadOnlyList<MedicalProfileDto.Response.Details>>;
+        public record Query(string? CityCode = default) : IQueryRequest<IReadOnlyList<MedicalProfileDto.Response.Details>>;
 
         public class Handler : IRequestHandler<Query, IReadOnlyList<MedicalProfileDto.Response.Details>>
         {
@@ -36,8 +36,7 @@ namespace businesslogic.Features.MedicalProfileFeatures
                 }
                 else
                 {
-                    var result = await _repository.GetListAsync(request.CityCode, cancellationToken);
-                    return _mapper.Map<IReadOnlyList<(MedicalProfile, int doctorsCount)>, IReadOnlyList<MedicalProfileDto.Response.Details>>(result);
+                    return await _repository.GetListAsync(request.CityCode, cancellationToken);
                 }
             }
         }

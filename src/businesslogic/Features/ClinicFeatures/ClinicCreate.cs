@@ -25,6 +25,7 @@ namespace businesslogic.Features.DoctorFeatures
 
             public async Task<ClinicDto.Response.Details> Handle(Command request, CancellationToken cancellationToken)
             {
+                // TODO: tts
                 var result = await _repository.CreateAsync(request.Clinic, cancellationToken);
                 return _mapper.Map<Clinic, ClinicDto.Response.Details>(result);
             }
