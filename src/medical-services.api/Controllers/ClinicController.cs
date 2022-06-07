@@ -43,7 +43,7 @@ namespace medical_services.api.Controllers
         public async Task<ActionResult<ClinicDto.Response.Details>> CreateClinic([FromBody] ClinicDto.Request.Create clinic, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new ClinicCreate.Command(clinic), cancellationToken);
-            return Created(Url.Action(nameof(GetClinicById), new { id = result.Id }), result);
+            return Created(Url.Action(nameof(GetClinicById), new { clinicId = result.Id }), result);
         }
 
         [HttpPatch("{clinicId}")]

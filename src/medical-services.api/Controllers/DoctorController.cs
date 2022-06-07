@@ -4,6 +4,7 @@ using businesslogic.Features.DoctorFeatures;
 using MediatR;
 using businesslogic.abstraction.Dto;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace medical_services.api.Controllers
 {
@@ -19,10 +20,10 @@ namespace medical_services.api.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<DoctorDto.Response.Details>> GetDoctorById(long id, CancellationToken cancellationToken)
+        [HttpGet("{doctorId}")]
+        public async Task<ActionResult<DoctorDto.Response.Details>> GetDoctorById(long doctorId, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new DoctorDetails.Query(id), cancellationToken);
+            var result = await _mediator.Send(new DoctorDetails.Query(doctorId), cancellationToken);
             return result.Match<ActionResult<DoctorDto.Response.Details>>(
                 sc => Ok(sc),
                 nf => NotFound());
@@ -32,23 +33,36 @@ namespace medical_services.api.Controllers
         public async Task<ActionResult<DoctorDto.Response.Details>> CreateDoctor([FromBody]DoctorDto.Request.Create doctor, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new DoctorCreate.Command(doctor), cancellationToken);
-            return Created(Url.Action(nameof(GetDoctorById), new { id = result.Id }), result);
+            return Created(Url.Action(nameof(GetDoctorById), new { doctorId = result.Id }), result);
         }
 
-        [HttpPatch("{id}")]
-        public async Task<ActionResult<DoctorDto.Response.Details>> UpdateDoctor(long id, [FromBody]DoctorDto.Request.Update doctor, CancellationToken cancellationToken)
+        [HttpPatch("{doctorId}")]
+        public async Task<ActionResult<DoctorDto.Response.Details>> UpdateDoctor(long doctorId,
+                                                                                 [FromBody] DoctorDto.Request.Update doctor,
+                                                                                 CancellationToken cancellationToken)
         {
-           var result = await _mediator.Send(new DoctorUpdate.Command(id, doctor), cancellationToken);
+           var result = await _mediator.Send(new DoctorUpdate.Command(doctorId, doctor), cancellationToken);
 
             return result.Match<ActionResult<DoctorDto.Response.Details>>(
                 sc => Ok(sc),
                 nf => NotFound());
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteDoctor(long id, CancellationToken cancellationToken)
+        [HttpPut("{doctorId}/medicalprofiles")]
+        public async Task<ActionResult<DoctorDto.Response.Details>> UpdateDoctorMedicalProfiles(long doctorId,
+                                                                                                [FromBody] IReadOnlyList<long> medicalProfiles,
+                                                                                                CancellationToken cancellationToken)
         {
-           var result = await _mediator.Send(new DoctorDelete.Command(id), cancellationToken);
+            var result = await _mediator.Send(new UpdateDoctorMedicalProfiles.Command(doctorId, medicalProfiles), cancellationToken);
+            return result.Match<ActionResult<DoctorDto.Response.Details>>(
+                sc => Ok(sc),
+                nf => NotFound());
+        }
+
+        [HttpDelete("{doctorId}")]
+        public async Task<IActionResult> DeleteDoctor(long doctorId, CancellationToken cancellationToken)
+        {
+           var result = await _mediator.Send(new DoctorDelete.Command(doctorId), cancellationToken);
 
             return result.Match<IActionResult>(
                 sc => NoContent(),
