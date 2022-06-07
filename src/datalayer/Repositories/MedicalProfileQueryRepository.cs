@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using businesslogic.abstraction.Dto;
 using datalayer.abstraction.Entities;
 using datalayer.abstraction.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -25,16 +26,24 @@ namespace datalayer.Repositories
                                                                                             string cityCode,
                                                                                             CancellationToken cancellationToken)
         {
-            var result = await _dbContext.MedicalProfile.Include(mp => mp.Doctors.Where(d => d.ClinicsLink.Any(cd => cd.Clinic.Address.CityCode == cityCode)))
-                                                        .SingleOrDefaultAsync(m => m.Id == id, cancellationToken);
+            // TODO: duplicate fix
+            var result = await _dbContext.MedicalProfile
+                .Include(mp => mp.ClinicDoctors
+                    .Where(cd => cd.Clinic.Address.CityCode == cityCode))
+                .ThenInclude(cd => cd.Clinic)
+                .ThenInclude(c => c.DoctorsLink)
+                .ThenInclude(cd => cd.Doctor)
+                .SingleOrDefaultAsync(m => m.Id == id, cancellationToken);
             return result is null ? new NotFound() : result;
         }
 
-        async Task<IReadOnlyList<(MedicalProfile, int doctorsCount)>> IMedicalProfileQueryRepository.GetListAsync(string cityCode, CancellationToken cancellationToken)
+        async Task<IReadOnlyList<MedicalProfileDto.Response.Details>> IMedicalProfileQueryRepository.GetListAsync(string cityCode, CancellationToken cancellationToken)
         {
             return await _dbContext.MedicalProfile
-                .Select(mp => new ValueTuple<MedicalProfile, int>(
-                    mp,
+                .Select(mp => new MedicalProfileDto.Response.Details(
+                    mp.Id,
+                    mp.Name,
+                    mp.Description,
                     mp.Doctors.Count(d => d.ClinicsLink.Any(c => c.Clinic.Address.CityCode == cityCode))))
                 .ToListAsync(cancellationToken);
         }

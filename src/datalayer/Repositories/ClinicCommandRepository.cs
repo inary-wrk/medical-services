@@ -33,17 +33,6 @@ namespace datalayer.Repositories
             return clinic;
         }
 
-        async Task<OneOf<Success, NotFound>> IClinicCommandRepository.DeleteAsync(long clinicId, CancellationToken cancellationToken)
-        {
-            var clinic = await _dbContext.Clinic.FindAsync(new object[] { clinicId }, cancellationToken);
-            if (clinic is null)
-                return new NotFound();
-
-            _dbContext.Clinic.Remove(clinic);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            return new Success();
-        }
-
         async Task<OneOf<Clinic, NotFound>> IClinicCommandRepository.UpdateAsync(long clinicId,
                                                                                  ClinicDto.Request.Update clinicDto,
                                                                                  CancellationToken cancellationToken)
@@ -57,26 +46,49 @@ namespace datalayer.Repositories
             return dbClinic;
         }
 
+        async Task<OneOf<Success, NotFound>> IClinicCommandRepository.DeleteAsync(long clinicId, CancellationToken cancellationToken)
+        {
+            var clinic = await _dbContext.Clinic.FindAsync(new object[] { clinicId }, cancellationToken);
+            if (clinic is null)
+                return new NotFound();
+
+            _dbContext.Clinic.Remove(clinic);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return new Success();
+        }
+
         async Task<OneOf<Clinic, NotFound>> IClinicCommandRepository.UpdateClinicDoctorAsync(long clinicId,
                                                                                              long doctorId,
                                                                                              IReadOnlyList<long> medicalProfileIds,
                                                                                              CancellationToken cancellationToken)
         {
-            var existingClinic = await _dbContext.Clinic.Include(c => c.DoctorsLink).SingleOrDefaultAsync(c => c.Id == clinicId, cancellationToken);
+            var existingClinic = await _dbContext.Clinic
+                .Include(c => c.DoctorsLink.Where(cd => cd.DoctorId == doctorId))
+                .ThenInclude(cd => cd.Doctor.MedicalProfiles.Where(mp => medicalProfileIds.Contains(mp.Id)))
+                .SingleOrDefaultAsync(c => c.Id == clinicId, cancellationToken);
             if (existingClinic is null)
                 return new NotFound();
 
-            var existingDoctor = await _dbContext.Doctor.Include(d => d.MedicalProfiles.Where(mp => medicalProfileIds.Contains(mp.Id)))
-                                                  .SingleOrDefaultAsync(d => d.Id == doctorId, cancellationToken);
-            if (existingDoctor is null)
-                return new NotFound();
-
-            existingClinic.DoctorsLink.Add(new ClinicDoctor
+            if (existingClinic.DoctorsLink.Count > 0)
             {
-                Clinic = existingClinic,
-                Doctor = existingDoctor,
-                MedicalProfiles = existingDoctor.MedicalProfiles
-            });
+                existingClinic.DoctorsLink.First().MedicalProfiles = existingClinic.DoctorsLink.First().Doctor.MedicalProfiles;
+                return existingClinic;
+            }
+            else
+            {
+                var existingDoctor = await _dbContext.Doctor
+                        .Include(d => d.MedicalProfiles.Where(mp => medicalProfileIds.Contains(mp.Id)))
+                        .SingleOrDefaultAsync(d => d.Id == doctorId, cancellationToken);
+                if (existingDoctor is null)
+                    return new NotFound();
+
+                    existingClinic.DoctorsLink.Add(new ClinicDoctor
+                    {
+                        Clinic = existingClinic,
+                        Doctor = existingDoctor,
+                        MedicalProfiles = existingDoctor.MedicalProfiles
+                    });
+            }
 
             await _dbContext.SaveChangesAsync(cancellationToken);
             // TODO: compare with requested return errors fo entities not found?

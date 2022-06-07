@@ -10,10 +10,12 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="6.0.5" />
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.1" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="5.0.10" />
 		<PackageReference Include="LinqKit.Microsoft.EntityFrameworkCore" Version="5.1.2" />
 		<PackageReference Include="OneOf" Version="3.0.216" />
+		<PackageReference Include="SerilogAnalyzer" Version="0.15.0" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -23,7 +23,7 @@ namespace datalayer.Repositories
 
         async Task<IReadOnlyList<ClinicDto.Response.CityCode>> IClinicQueryRepository.GetAvailableCitiesAsync(CancellationToken cancellationToken)
         {
-            return await _dbContext.Clinic.Select(c => new ClinicDto.Response.CityCode(c.Address.City, c.Address.Region)).Distinct().ToListAsync(cancellationToken);
+            return await _dbContext.Clinic.Select(c => new ClinicDto.Response.CityCode(c.Address.City, c.Address.CityCode)).Distinct().ToListAsync(cancellationToken);
         }
 
         async Task<OneOf<Clinic, NotFound>> IClinicQueryRepository.GetAsync(long id, CancellationToken cancellationToken)

@@ -17,12 +17,12 @@ namespace datalayer.Repositories
             _dbContext = dbContext;
         }
 
-        async Task<OneOf<Doctor, NotFound>> IDoctorQueryRepository.GetAsync(long id, CancellationToken cancellationToken)
+        async Task<OneOf<Doctor, NotFound>> IDoctorQueryRepository.GetAsync(long doctorId, CancellationToken cancellationToken)
         {
             var doctor = await _dbContext.Doctor.Include(d => d.ClinicsLink)
                                                 .ThenInclude(cd => cd.MedicalProfiles)
                                                 .Include(d => d.MedicalProfiles)
-                                                .SingleOrDefaultAsync(d => d.Id == id, cancellationToken);
+                                                .SingleOrDefaultAsync(d => d.Id == doctorId, cancellationToken);
             return doctor is null ? new NotFound() : doctor;
         }
     }

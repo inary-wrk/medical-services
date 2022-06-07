@@ -10,7 +10,7 @@ namespace datalayer
         public DbSet<MedicalProfile> MedicalProfile { get; set; } = null!;
 
         protected BaseDbContext(DbContextOptions contextOptions)
-           : base(contextOptions)
+            : base(contextOptions)
         {
         }
 
@@ -33,7 +33,7 @@ namespace datalayer
             modelBuilder.Entity<ClinicDoctor>()
                 .HasMany(cd => cd.MedicalProfiles)
                 .WithMany(mp => mp.ClinicDoctors);
-            
+
             modelBuilder.Entity<Clinic>()
                 .OwnsOne(clinic => clinic.Address)
                 .HasIndex(a => a.CityCode);

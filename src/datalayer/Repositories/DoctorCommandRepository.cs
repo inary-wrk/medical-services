@@ -7,6 +7,8 @@ using OneOf;
 using OneOf.Types;
 using businesslogic.abstraction.Dto;
 using businesslogic.abstraction.Contracts;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace datalayer.Repositories
 {
@@ -29,27 +31,42 @@ namespace datalayer.Repositories
             return doctor;
         }
 
-        async Task<OneOf<Success, NotFound>> IDoctorCommandRepository.DeleteAsync(long id, CancellationToken cancellationToken)
+        async Task<OneOf<Success, NotFound>> IDoctorCommandRepository.DeleteAsync(long doctorId, CancellationToken cancellationToken)
         {
-            var doctor = await _dbContext.Doctor.FindAsync(new object[] { id }, cancellationToken);
-            if (doctor is null)
+            var existingDoctor = await _dbContext.Doctor.FindAsync(new object[] { doctorId }, cancellationToken);
+            if (existingDoctor is null)
                 return new NotFound();
 
-            _dbContext.Doctor.Remove(doctor);
+            _dbContext.Doctor.Remove(existingDoctor);
             await _dbContext.SaveChangesAsync(cancellationToken);
             return new Success();
         }
 
-        async Task<OneOf<Doctor, NotFound>> IDoctorCommandRepository.UpdateAsync(long id, DoctorDto.Request.Update doctor, CancellationToken cancellationToken)
+        async Task<OneOf<Doctor, NotFound>> IDoctorCommandRepository.UpdateAsync(long doctorId,
+                                                                                 DoctorDto.Request.Update doctor,
+                                                                                 CancellationToken cancellationToken)
         {
-            var dbDoctor = await _dbContext.Doctor.FindAsync(new object[] { id }, cancellationToken);
-            if (dbDoctor is null)
+            var existingDoctor = await _dbContext.Doctor.FindAsync(new object[] { doctorId }, cancellationToken);
+            if (existingDoctor is null)
                 return new NotFound();
 
-            _mapper.Map(doctor, dbDoctor);
+            _mapper.Map(doctor, existingDoctor);
 
             await _dbContext.SaveChangesAsync(cancellationToken);
-            return dbDoctor;
+            return existingDoctor;
+        }
+
+        async Task<OneOf<Doctor, NotFound>> IDoctorCommandRepository.UpdateMedicalProfilesAsync(long doctorId,
+                                                                                                IReadOnlyList<long> medicalProfileIds,
+                                                                                                CancellationToken cancellationToken)
+        {
+            var existingDoctor = await _dbContext.Doctor.Include(d => d.MedicalProfiles).SingleOrDefaultAsync(d => d.Id == doctorId, cancellationToken);
+            if (existingDoctor is null)
+                return new NotFound();
+
+            existingDoctor.MedicalProfiles = await _dbContext.MedicalProfile.Where(mp => medicalProfileIds.Contains(mp.Id)).ToListAsync(cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return existingDoctor;
         }
     }
 }
